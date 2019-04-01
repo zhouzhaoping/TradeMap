@@ -21,7 +21,7 @@ def get_row_by_name(table, name, taildel):
 
 
 def get_bet_data():
-    data = xlrd.open_workbook('C:\\Users\\zhaopingzhou\\OneDrive\\理财\\finance\\我的水平.xlsm')
+    data = xlrd.open_workbook('C:\\Users\\zhouz\\OneDrive\\理财\\finance\\我的水平.xlsm')
     table = data.sheet_by_name('赌球')
     return get_row_by_name(table, '日期', True), get_row_by_name(table, '阶段性盈利', True)
 
@@ -35,7 +35,7 @@ def round_up(value):
 
 
 def check_stock_data():
-    data = xlrd.open_workbook('C:\\Users\\zhaopingzhou\\OneDrive\\理财\\finance\\我的水平.xlsm')
+    data = xlrd.open_workbook('C:\\Users\\zhouz\\OneDrive\\理财\\finance\\我的水平.xlsm')
     table = data.sheet_by_name('场内交割单')
     headers = table.row_values(0)
     code_index = headers.index('股票代码')
@@ -117,7 +117,7 @@ def check_stock_data():
 
 
 def get_fund_data():
-    data = xlrd.open_workbook('C:\\Users\\zhaopingzhou\\OneDrive\\理财\\finance\\我的水平.xlsm')
+    data = xlrd.open_workbook('C:\\Users\\zhouz\\OneDrive\\理财\\finance\\我的水平.xlsm')
     table = data.sheet_by_name('场外基金')
     headers = table.row_values(0)
     code_index = headers.index('代码')
