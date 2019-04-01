@@ -11,7 +11,7 @@ from pylab import *
 import priceCrawler
 from IPython.display import display
 import datetime
-
+from pyecharts import Line, Overlap
 
 def xirr(transactions):
     years = [(ta[0] - transactions[0][0]).days / 365.0 for ta in transactions]
@@ -51,59 +51,25 @@ def bet():
     xs = dates
     ys = profits
     xs_delta = [(x - min(xs)).days + 1 for x in xs]
+    xs_date = [x.date() for x in xs]
     ys_perday = [round(y / x, 2) for (y, x) in zip(ys, xs_delta)]
 
-    # 中文显示
-    mpl.rcParams['font.sans-serif'] = ['SimHei']
-    mpl.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+    line1 = Line("日均盈利走势图")
+    line1.add("日均盈利", xs_date, ys_perday, is_smooth=True,
+             mark_line=["min", "max", "average"], mark_point=['min', 'max', 'average', {"coord": [xs_date[-1], ys_perday[-1]], "name": "now"}],
+             is_datazoom_show=True, xaxis_name="时间", yaxis_name="元", tooltip_trigger="axis")
 
-    # 配置横坐标
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y/%m'))
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.xlabel(r'时间')
+    line2 = Line("日均盈利走势图")
+    line2.add("总盈亏", xs_date, ys, is_smooth=True,
+              is_datazoom_show=True, xaxis_name="时间", yaxis_name="元", tooltip_trigger="axis",is_yaxis_show=False)
 
-    # 配置纵坐标
-    plt.yticks(np.arange(round(min(ys) / 5000)*5000, round(max(ys) / 5000)*5000+1, 5000.0))
-    plt.ylabel(r'总盈亏：元', color='b')
-
-    # Plot
-    plt.plot(xs, ys, 'b-')
-    plt.gcf().autofmt_xdate()  # 自动旋转日期标记
-
-    # max and min
-    max_index = ys.index(max(ys))
-    min_index = ys.index(min(ys))
-    plt.scatter(xs[max_index], ys[max_index], marker='o', c='r')
-    plt.text(xs[max_index], ys[max_index], s=str(ys[max_index]))
-    plt.scatter(xs[min_index], ys[min_index], marker='o', c='g')
-    plt.text(xs[min_index], ys[min_index], s=str(ys[min_index]))
-
-    # now
-    plt.scatter(xs[-1], ys[-1], marker='*')
-    plt.text(xs[-1], ys[-1], s=str(ys[-1]))
-
-    # irr data
-    plt.twinx()
-    plt.plot(xs, ys_perday, 'r-')
-    plt.ylabel(r'日均盈利：元', color='r')
-
-    # max and min
-    max_index = ys_perday.index(max(ys_perday))
-    min_index = ys_perday.index(min(ys_perday))
-    plt.scatter(xs[max_index], ys_perday[max_index], marker='o', c='r')
-    plt.text(xs[max_index], ys_perday[max_index], s=str(round(ys_perday[max_index], 2)))
-    plt.scatter(xs[min_index], ys_perday[min_index], marker='o', c='g')
-    plt.text(xs[min_index], ys_perday[min_index], s=str(round(ys_perday[min_index], 2)))
-
-    # now
-    plt.scatter(xs[-1], ys_perday[-1], marker='*')
-    plt.text(xs[-1], ys_perday[-1], s=str(round(ys_perday[-1], 2)))
-    plt.yticks(np.arange(round(min(ys_perday) / 20) * 20, round(max(ys_perday) / 20) * 20 + 1, 40.0))
-    plt.grid(True, axis='y', linestyle="--")
-
-    plt.show()
-    return
-
+    overlap = Overlap(width=1200, height=600)
+    # 默认不新增 x y 轴，并且 x y 轴的索引都为 0
+    overlap.add(line1)
+    # 新增一个 y 轴，此时 y 轴的数量为 2，第二个 y 轴的索引为 1（索引从 0 开始），所以设置 yaxis_index = 1
+    # 由于使用的是同一个 x 轴，所以 x 轴部分不用做出改变
+    overlap.add(line2, yaxis_index=1, is_add_yaxis=True)
+    overlap.render('bet.html')
 
 def stock():
     code2stock_summary, tas = excelReader.check_stock_data()
@@ -164,8 +130,8 @@ def fund():
 
 if __name__ == "__main__":
     bet()
-    stock()
-    fund()
+    #stock()
+    #fund()
     #tas = [(date(2010, 12, 29), -10000),
     #       (date(2012, 1, 25), 20),
     #       (date(2012, 3, 8), 10100)]
