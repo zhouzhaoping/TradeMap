@@ -1,6 +1,16 @@
 import xlrd
 from datetime import datetime
 from StockSummary import StockSummary
+from configparser import ConfigParser
+
+
+def get_table_from_file(table_name):
+    cfg = ConfigParser()
+    cfg.read('config.ini', encoding='UTF-8')
+    filepath = cfg.get('file', 'path')
+    data = xlrd.open_workbook(filepath)
+    table = data.sheet_by_name(table_name)
+    return table
 
 
 def get_row_by_name(table, name, taildel):
@@ -21,9 +31,9 @@ def get_row_by_name(table, name, taildel):
 
 
 def get_bet_data():
-    data = xlrd.open_workbook('C:\\Users\\zhaopingzhou\\OneDrive\\理财\\finance\\我的水平.xlsm')
-    table = data.sheet_by_name('赌球')
+    table = get_table_from_file('赌球')
     return get_row_by_name(table, '日期', True), get_row_by_name(table, '阶段性盈利', True)
+
 
 def get_key(dict, value):
     return [k for k, v in dict.items() if v == value]
@@ -35,8 +45,7 @@ def round_up(value):
 
 
 def check_stock_data():
-    data = xlrd.open_workbook('C:\\Users\\zhaopingzhou\\OneDrive\\理财\\finance\\我的水平.xlsm')
-    table = data.sheet_by_name('场内交割单')
+    table = get_table_from_file('场内交割单')
     headers = table.row_values(0)
     code_index = headers.index('股票代码')
     name_index = headers.index('股票名称')
@@ -117,8 +126,7 @@ def check_stock_data():
 
 
 def get_fund_data():
-    data = xlrd.open_workbook('C:\\Users\\zhaopingzhou\\OneDrive\\理财\\finance\\我的水平.xlsm')
-    table = data.sheet_by_name('场外基金')
+    table = get_table_from_file('场外基金')
     headers = table.row_values(0)
     code_index = headers.index('代码')
     name_index = headers.index('基金名称')
