@@ -51,7 +51,7 @@ def bet():
     xs = dates
     ys = profits
     xs_delta = [(x - min(xs)).days + 1 for x in xs]
-    ys_perday = [round(y / x, 2) for (y, x) in zip(ys, xs_delta)]
+    ys_perday = [y / x for (y, x) in zip(ys, xs_delta)]
 
     # 中文显示
     mpl.rcParams['font.sans-serif'] = ['SimHei']
@@ -97,7 +97,7 @@ def bet():
 
     # now
     plt.scatter(xs[-1], ys_perday[-1], marker='*')
-    plt.text(xs[-1], ys_perday[-1], s=str(round(ys_perday[-1], 2)))
+    plt.text(xs[-1], ys_perday[-1], s=str(round(ys_perday[-1], 3)))
     plt.yticks(np.arange(round(min(ys_perday) / 20) * 20, round(max(ys_perday) / 20) * 20 + 1, 40.0))
     plt.grid(True, axis='y', linestyle="--")
 
