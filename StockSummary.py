@@ -23,7 +23,7 @@ class StockSummary:
         self.profit = self.earn + self.value - self.cost
         self.rate = self.profit / self.cost * 100
         return
-
+        #todo 收益率应该用最大投入本金计算？
         #if self.position != 0:# 依然持仓 TODO if cost > earn 岂不是零成本
         #    self.rate = self.profit / (self.cost - self.earn) * 100
         #else:# 卖光
