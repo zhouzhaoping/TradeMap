@@ -8,6 +8,7 @@ import time
 import html
 import datetime
 
+
 # http://baostock.com
 def get_stock_price(stock_code, date):
     #### 登陆系统 ####
@@ -59,6 +60,7 @@ def get_sina_price(stock_code):
     r = requests.get(url)
     result = r.content.decode('GBK')
     #print(result)
+
     try:
         curprice = result.split(",")[3]
         if stock_code[:2] == "hk":
@@ -67,7 +69,7 @@ def get_sina_price(stock_code):
             date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2019-03-29", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2019-04-08", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html
@@ -89,6 +91,6 @@ def get_hk_rate():
 
 if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
-    get_fund_price("159910")
-    #print(get_sina_price("300122"))
+    #get_fund_price("159910")
+    print(get_sina_price("300122"))  #http://hq.sinajs.cn/list=of160311
     #get_hk_rate()
