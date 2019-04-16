@@ -5,28 +5,15 @@ import random
 import json
 import datetime
 from dateutil.relativedelta import relativedelta
+import crawler.cache
 
 from bs4 import BeautifulSoup
 
-his_data_file = "his_data.pkl"
-def print_cache_all():
-    with open(his_data_file, 'rb') as f:
-        try:
-            dict = pickle.load(f)
-        except:
-            dict = {}
-    for (stockcode, date) in dict.keys():
-        print(stockcode, date, dict[(stockcode, date)])
-
 # A股+场内基金
-def get_stock_his_price(stockcode, date, cache=True):
-    with open(his_data_file, 'rb') as f:
-        try:
-            dict = pickle.load(f)
-        except:
-            dict = {}
+def get_stock_his_price(stockcode, date, ifcache=True):
 
-    if cache and (stockcode, date) in dict.keys():
+    dict = cache.get_cache()
+    if ifcache and (stockcode, date) in dict.keys():
         print("hit")
         return dict[(stockcode, date)]
 
@@ -51,23 +38,16 @@ def get_stock_his_price(stockcode, date, cache=True):
             print("insert", time, price)
             dict[stockcode, time] = price
 
-    with open(his_data_file, 'wb') as f:
-        pickle.dump(dict, f)
-
+    cache.save_cache(dict)
     if (stockcode, date) in dict.keys():
         return dict[stockcode, date]
     else:
         return -1
 
 # 港股
-def get_hkstock_his_price(stockcode, date, cache=True):
-    with open(his_data_file, 'rb') as f:
-        try:
-            dict = pickle.load(f)
-        except:
-            dict = {}
-
-    if cache and (stockcode, date) in dict.keys():
+def get_hkstock_his_price(stockcode, date, ifcache=True):
+    dict = cache.get_cache()
+    if ifcache and (stockcode, date) in dict.keys():
         print("hit")
         return dict[(stockcode, date)]
 
@@ -93,8 +73,7 @@ def get_hkstock_his_price(stockcode, date, cache=True):
                     price = float(td.text.strip())
             print("insert", time, price)
             dict[stockcode, time] = price
-    with open(his_data_file, 'wb') as f:
-        pickle.dump(dict, f)
+    cache.save_cache(dict)
 
     if (stockcode, date) in dict.keys():
         return dict[stockcode, date]
@@ -103,14 +82,9 @@ def get_hkstock_his_price(stockcode, date, cache=True):
 
 # 场外基金
 # http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_LSJZ.php?symbol=110033
-def get_fund_his_price(stockcode, date, cache=True):
-    with open(his_data_file, 'rb') as f:
-        try:
-            dict = pickle.load(f)
-        except:
-            dict = {}
-
-    if cache and (stockcode, date) in dict.keys():
+def get_fund_his_price(stockcode, date, ifcache=True):
+    dict = cache.get_cache()
+    if ifcache and (stockcode, date) in dict.keys():
         print("hit")
         return dict[(stockcode, date)]
 
@@ -128,8 +102,7 @@ def get_fund_his_price(stockcode, date, cache=True):
         print("insert", time, price)
         dict[stockcode, time] = price
 
-    with open(his_data_file, 'wb') as f:
-        pickle.dump(dict, f)
+    cache.save_cache(dict)
 
     if (stockcode, date) in dict.keys():
         return dict[stockcode, date]
@@ -146,5 +119,5 @@ if __name__ == "__main__":
     print(get_hkstock_his_price("hk00981", datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))
     # 场外基金
     print(get_fund_his_price("of110033", datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))
-    print_cache_all()
+    #cache.print_cache_all()
     #TODO 可转债

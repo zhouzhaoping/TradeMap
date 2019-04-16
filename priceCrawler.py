@@ -92,5 +92,5 @@ def get_hk_rate():
 if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
     #get_fund_price("159910")
-    print(get_sina_price("300122"))  #http://hq.sinajs.cn/list=of160311
-    #get_hk_rate()
+    #print(get_sina_price("300122"))  #http://hq.sinajs.cn/list=of160311
+    get_hk_rate()
