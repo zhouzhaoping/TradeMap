@@ -5,14 +5,14 @@ import random
 import json
 import datetime
 from dateutil.relativedelta import relativedelta
-import crawler.cache
+from crawler.cache import get_cache, save_cache
 
 from bs4 import BeautifulSoup
 
 # A股+场内基金
 def get_stock_his_price(stockcode, date, ifcache=True):
 
-    dict = cache.get_cache()
+    dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
         print("hit")
         return dict[(stockcode, date)]
@@ -38,7 +38,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
             print("insert", time, price)
             dict[stockcode, time] = price
 
-    cache.save_cache(dict)
+    save_cache(dict)
     if (stockcode, date) in dict.keys():
         return dict[stockcode, date]
     else:
@@ -46,7 +46,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
 
 # 港股
 def get_hkstock_his_price(stockcode, date, ifcache=True):
-    dict = cache.get_cache()
+    dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
         print("hit")
         return dict[(stockcode, date)]
@@ -73,7 +73,7 @@ def get_hkstock_his_price(stockcode, date, ifcache=True):
                     price = float(td.text.strip())
             print("insert", time, price)
             dict[stockcode, time] = price
-    cache.save_cache(dict)
+    save_cache(dict)
 
     if (stockcode, date) in dict.keys():
         return dict[stockcode, date]
@@ -83,7 +83,7 @@ def get_hkstock_his_price(stockcode, date, ifcache=True):
 # 场外基金
 # http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_LSJZ.php?symbol=110033
 def get_fund_his_price(stockcode, date, ifcache=True):
-    dict = cache.get_cache()
+    dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
         print("hit")
         return dict[(stockcode, date)]
@@ -102,7 +102,7 @@ def get_fund_his_price(stockcode, date, ifcache=True):
         print("insert", time, price)
         dict[stockcode, time] = price
 
-    cache.save_cache(dict)
+    save_cache(dict)
 
     if (stockcode, date) in dict.keys():
         return dict[stockcode, date]
@@ -120,4 +120,3 @@ if __name__ == "__main__":
     # 场外基金
     print(get_fund_his_price("of110033", datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))
     #cache.print_cache_all()
-    #TODO 可转债

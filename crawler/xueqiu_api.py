@@ -1,36 +1,46 @@
-
-
+from crawler.cache import get_cache, save_cache
+import datetime
+import requests
+import time
+import json
 
 
 # 可转债
 # https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol=SZ128040&begin=1555517900000&period=day&count=-1
-def get_bond_his_rate(date, ifcache=True):
-    dict = cache.get_cache()
-    if ifcache and ("hkrate", date) in dict.keys():
+def get_bond_his_rate(stockcode, date, ifcache=True):
+
+    dict = get_cache()
+    if ifcache and (stockcode, date) in dict.keys():
         print("hit")
-        return dict[("hkrate", date)]
+        return dict[(stockcode, date)]
 
-    datestr = date.strftime("%Y%m%d")
-    # print(datestr)
-    response = requests.get(
-        'http://query.sse.com.cn/commonSoaQuery.do?&jsonCallBack=jsonpCallback'
-        + str(math.floor(random.random() * (100000 + 1))) +
-        '&updateDate=' + datestr + '&updateDateEnd=' + datestr + '&sqlId=FW_HGT_JSHDBL',
-        headers={'Referer': 'http://www.sse.com.cn/services/hkexsc/disclo/ratios/'}
-    )
-    # print(response.text)
-    j = json.loads(response.text[19:-1])
-    rate = float(j['result'][0]['sellPrice'])
+    timestamp = int(time.mktime(date.timetuple()) * 1000)
+    #print(timestamp)
 
-    print("insert", date, rate)
-    dict["hkrate", date] = rate
-    cache.save_cache(dict)
-    if ("hkrate", date) in dict.keys():
-        return dict["hkrate", date]
+    url = "https://stock.xueqiu.com/v5/stock/chart/kline.json?symbol=$stockcode&begin=$timestamp&period=day&count=-1"
+    url = url.replace("$stockcode", stockcode).replace("$timestamp", str(timestamp))
+    #print(url)
+
+    session = requests.Session()
+    session.headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+    session.get('https://xueqiu.com/')
+    r = session.get(url)
+    #print(r.content)
+    j = json.loads(r.content)
+    date_get = datetime.datetime.fromtimestamp(j['data']['item'][0][0] / 1000.0).date()
+    close = j['data']['item'][0][5]
+
+    if date_get == date:
+        print("insert", date, close)
+        dict[stockcode, date] = close
+
+    save_cache(dict)
+    if (stockcode, date) in dict.keys():
+        return dict[stockcode, date]
     else:
         return -1
 
 
 if __name__ == "__main__":
-    # 上证港股通结算汇率
-    print(get_hk_his_rate(datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))
+    # 可转债
+    print(get_bond_his_rate("SZ128039", datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))

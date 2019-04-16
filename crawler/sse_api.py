@@ -4,12 +4,13 @@ import math
 import random
 import json
 import datetime
+from crawler.cache import get_cache, save_cache
 
 
 # 上证港股通结算汇率
 # http://www.sse.com.cn/services/hkexsc/disclo/ratios/
 def get_hk_his_rate(date, ifcache=True):
-    dict = cache.get_cache()
+    dict = get_cache()
     if ifcache and ("hkrate", date) in dict.keys():
         print("hit")
         return dict[("hkrate", date)]
@@ -28,7 +29,7 @@ def get_hk_his_rate(date, ifcache=True):
 
     print("insert", date, rate)
     dict["hkrate", date] = rate
-    cache.save_cache(dict)
+    save_cache(dict)
     if ("hkrate", date) in dict.keys():
         return dict["hkrate", date]
     else:
