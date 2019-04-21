@@ -1,6 +1,8 @@
 import pickle
 
+# todo main cache pool
 his_data_file = "data/his_data.pkl"
+#his_data_file = "../curve/data/his_data.pkl"
 
 def print_cache_all():
     with open(his_data_file, 'rb') as f:
@@ -23,6 +25,10 @@ def save_cache(dict):
     with open(his_data_file, 'wb') as f:
         pickle.dump(dict, f)
 
+def insert_cache(key, value):
+    dict = get_cache()
+    dict[key] = value
+    save_cache(dict)
 
 if __name__ == "__main__":
     print_cache_all()

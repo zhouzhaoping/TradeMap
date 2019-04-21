@@ -11,7 +11,6 @@ from bs4 import BeautifulSoup
 
 # A股+场内基金
 def get_stock_his_price(stockcode, date, ifcache=True):
-    #todo 停牌
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
         #print("hit")
@@ -46,6 +45,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
 
 # 港股
 def get_hkstock_his_price(stockcode, date, ifcache=True):
+    #print("fuck")
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
         #print("hit")
@@ -83,7 +83,6 @@ def get_hkstock_his_price(stockcode, date, ifcache=True):
 # 场外基金
 # http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_LSJZ.php?symbol=110033
 def get_fund_his_price(stockcode, date, ifcache=True):
-    # todo qdii
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
         #print("hit")

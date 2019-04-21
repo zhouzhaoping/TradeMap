@@ -27,16 +27,13 @@ def get_bond_his_rate(stockcode, date, ifcache=True):
     r = session.get(url)
     #print(r.content)
     j = json.loads(r.content)
-    try:
-        date_get = datetime.datetime.fromtimestamp(j['data']['item'][0][0] / 1000.0).date()
-        close = float(j['data']['item'][0][5])
 
-        if date_get == date:
-            #print("insert", stockcode, date, close)
-            dict[stockcode, date] = close
-    except: #todo for 未上市
-        print("canot get", stockcode, date)
-        return 100.0
+    date_get = datetime.datetime.fromtimestamp(j['data']['item'][0][0] / 1000.0).date()
+    close = float(j['data']['item'][0][5])
+
+    if date_get == date:
+        #print("insert", stockcode, date, close)
+        dict[stockcode, date] = close
 
     save_cache(dict)
     if (stockcode, date) in dict.keys():
@@ -47,5 +44,4 @@ def get_bond_his_rate(stockcode, date, ifcache=True):
 
 if __name__ == "__main__":
     # 可转债
-    #print(get_bond_his_rate("SZ128039", datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))
-    print(get_bond_his_rate("SH113511", datetime.datetime.strptime("2018/7/9", '%Y/%m/%d').date()))
+    print(get_bond_his_rate("SZ128039", datetime.datetime.strptime("2019/4/9", '%Y/%m/%d').date()))
