@@ -75,16 +75,20 @@ def stock():
     code2stock_summary, tas = excelReader.check_stock_data()
 
     date_now = ""
-    data = {'code': [], 'stock': [], 'position': [], 'profit': [], 'rate%': [], 'irr_rate%': []}
+    data = {'code': [], 'stock': [], 'position': [], 'nav': [], 'profit': [], 'rate%': [], 'irr_rate%': []}
     for stock_code in code2stock_summary.keys():
+        if stock_code == "132018": ## TODO 三峡EB
+            continue
         nav, date_now = priceCrawler.get_sina_price(stock_code)
         if stock_code[:2] == "hk":
             nav = nav * priceCrawler.get_hk_rate()
+
         code2stock_summary[stock_code].rate(nav)
         tas.append((stock_code, date_now, code2stock_summary[stock_code].value))
         data['code'].append(stock_code)
         data['stock'].append(code2stock_summary[stock_code].name)
         data['position'].append(code2stock_summary[stock_code].position)
+        data['nav'].append(nav)
         data['profit'].append(round(code2stock_summary[stock_code].profit,2))
         data['rate%'].append(round(code2stock_summary[stock_code].rate,2))
         data['irr_rate%'].append(round(stock_irr(stock_code, tas), 2))
@@ -104,7 +108,7 @@ def fund():
     code2stock_summary, tas = excelReader.get_fund_data()
 
     date_now = ""
-    data = {'code': [], 'stock': [], 'position': [], 'profit': [], 'rate%': [], 'irr_rate%': []}
+    data = {'code': [], 'stock': [], 'position': [], 'nav': [], 'profit': [], 'rate%': [], 'irr_rate%': []}
     for stock_code in code2stock_summary.keys():
         nav, date_now = priceCrawler.get_fund_price(stock_code)
         code2stock_summary[stock_code].rate(nav)
@@ -113,6 +117,7 @@ def fund():
         data['code'].append(stock_code)
         data['stock'].append(code2stock_summary[stock_code].name)
         data['position'].append(code2stock_summary[stock_code].position)
+        data['nav'].append(code2stock_summary[stock_code].position)
         data['profit'].append(round(code2stock_summary[stock_code].profit, 2))
         data['rate%'].append(round(code2stock_summary[stock_code].rate, 2))
         data['irr_rate%'].append(round(stock_irr(stock_code, tas), 2))

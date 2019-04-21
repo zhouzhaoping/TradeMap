@@ -12,7 +12,7 @@ from crawler.cache import get_cache, save_cache
 def get_hk_his_rate(date, ifcache=True):
     dict = get_cache()
     if ifcache and ("hkrate", date) in dict.keys():
-        print("hit")
+        #print("hit")
         return dict[("hkrate", date)]
 
     datestr = date.strftime("%Y%m%d")
@@ -27,7 +27,7 @@ def get_hk_his_rate(date, ifcache=True):
     j = json.loads(response.text[19:-1])
     rate = float(j['result'][0]['sellPrice'])
 
-    print("insert", date, rate)
+    #print("insert", "hkrate", date, rate)
     dict["hkrate", date] = rate
     save_cache(dict)
     if ("hkrate", date) in dict.keys():

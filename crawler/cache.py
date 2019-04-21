@@ -1,6 +1,6 @@
 import pickle
 
-his_data_file = "his_data.pkl"
+his_data_file = "data/his_data.pkl"
 
 def print_cache_all():
     with open(his_data_file, 'rb') as f:

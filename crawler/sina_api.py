@@ -11,17 +11,17 @@ from bs4 import BeautifulSoup
 
 # A股+场内基金
 def get_stock_his_price(stockcode, date, ifcache=True):
-
+    #todo 停牌
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
-        print("hit")
+        #print("hit")
         return dict[(stockcode, date)]
 
     url = "http://money.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/" + \
         "$stockcode.phtml?year=$year&jidu=$jidu"
     url = url.replace("$stockcode", stockcode).replace("$year", str(date.year)) \
         .replace("$jidu", str((date.month + 2)//3))
-    print(url)
+    #print(url)
     r = requests.get(url)
     result = r.content.decode('GBK')
     bs = BeautifulSoup(result, "html.parser")
@@ -35,7 +35,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
                     time = datetime.datetime.strptime(td.text.strip(), '%Y-%m-%d').date()
                 elif idx2 == 7:
                     price = float(td.text.strip())
-            print("insert", time, price)
+            #print("insert", stockcode, time, price)
             dict[stockcode, time] = price
 
     save_cache(dict)
@@ -48,7 +48,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
 def get_hkstock_his_price(stockcode, date, ifcache=True):
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
-        print("hit")
+        #print("hit")
         return dict[(stockcode, date)]
 
     url = "http://stock.finance.sina.com.cn/hkstock/history/$stockcode.html"
@@ -71,7 +71,7 @@ def get_hkstock_his_price(stockcode, date, ifcache=True):
                     time = datetime.datetime.strptime(td.text.strip(), '%Y%m%d').date()
                 elif idx2 == 3:
                     price = float(td.text.strip())
-            print("insert", time, price)
+            #print("insert", stockcode, time, price)
             dict[stockcode, time] = price
     save_cache(dict)
 
@@ -83,9 +83,10 @@ def get_hkstock_his_price(stockcode, date, ifcache=True):
 # 场外基金
 # http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_LSJZ.php?symbol=110033
 def get_fund_his_price(stockcode, date, ifcache=True):
+    # todo qdii
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
-        print("hit")
+        #print("hit")
         return dict[(stockcode, date)]
 
     url = "http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav?symbol=$stockcode&datefrom=$datefrom&dateto=$dateto&page=1"
@@ -98,8 +99,8 @@ def get_fund_his_price(stockcode, date, ifcache=True):
 
     for data in j['result']['data']['data']:
         time = datetime.datetime.strptime(data['fbrq'], '%Y-%m-%d %H:%M:%S').date()
-        price = data['jjjz']
-        print("insert", time, price)
+        price = float(data['jjjz'])
+        #print("insert", stockcode, time, price)
         dict[stockcode, time] = price
 
     save_cache(dict)

@@ -2,6 +2,7 @@ import xlrd
 from datetime import datetime
 from StockSummary import StockSummary
 from configparser import ConfigParser
+from curve.Assets import *
 
 
 def get_table_from_file(table_name):
@@ -19,6 +20,7 @@ def get_row_by_name(table, name, taildel):
     ctype = table.cell_type(1, index)
     # ctype： 0 empty, 1 string, 2 number, 3 date, 4 boolean, 5 error
 
+    #print(table.nrows, name, ctype)
     result = list()
     for line in range(1, table.nrows - taildel):
         if ctype == 1:
@@ -165,8 +167,28 @@ def get_fund_data():
                     table.cell(line, headers.index('总计')).value))
     return code2stock_summary, tas
 
+def get_all_flow():
+    flows = list()
+    table = get_table_from_file('场内交割单')
+    stock_trade = zip(get_row_by_name(table, '时间', False), get_row_by_name(table, '买卖方向', False), get_row_by_name(table, '股票代码', False), get_row_by_name(table, '成交数量', False), get_row_by_name(table, '发生金额', False))
+    for (time, type, code, position, flow) in stock_trade:
+        if type == "分红": #todo 分红只考虑分现金，不考虑拆股
+            position = 0
+        flows.append(Flow(time, code, position, flow))
+
+    table = get_table_from_file('场外基金')
+    stock_trade = zip(get_row_by_name(table, '时间', False), get_row_by_name(table, '操作', False), get_row_by_name(table, '代码', False), get_row_by_name(table, '份额', False), get_row_by_name(table, '总额', False))
+    for (time, type, code, position, flow) in stock_trade:
+        flows.append(Flow(time, "of" + code, position, flow))
+
+    flowSort(flows)
+    #for flow in flows:
+    #    print(flow.time, flow.code, flow.position, flow.flow)
+    return flows
 
 if __name__ == "__main__":
     #check_stock_data()
-    get_fund_data()
+    #get_fund_data()
+    flows = get_all_flow()
+
 
