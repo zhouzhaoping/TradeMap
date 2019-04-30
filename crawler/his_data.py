@@ -12,7 +12,7 @@ def get_his_data(stockcode, date):
     # 12-深证转债，11-上证转债
 
     # 未上市债券
-    if stockcode in {"127012", "113530", "110057", "113532", "113533", "132018", "113025", "113026", "128065"}:
+    if stockcode in {"113025", "113026", "128065"}:
         return 100.0
 
     try:
@@ -24,7 +24,7 @@ def get_his_data(stockcode, date):
             result = get_hkstock_his_price(stockcode, date) * get_his_data("hkrate", date)
         elif stockcode[:2] == "12":
             result = get_bond_his_rate("SZ" + stockcode, date)
-        elif stockcode[:2] == "11":
+        elif stockcode[:2] in {"11", "13"}: #  13 for sh.EB
             result = get_bond_his_rate("SH" + stockcode, date)
         elif stockcode[:2] == "of":
             result = get_fund_his_price(stockcode, date)
