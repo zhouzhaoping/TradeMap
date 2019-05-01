@@ -78,7 +78,7 @@ def check_stock_data():
         elif buy_type == "中签":
             code2stock_summary[code].add(int(table.cell(line, headers.index('成交数量')).value),
                                          -table.cell(line, headers.index('发生金额')).value, 0.0)
-        elif buy_type == "分红":
+        elif buy_type == "分红" or buy_type == "股息":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
             assert code2stock_summary[code].position == -table.cell(line, headers.index('成交数量')).value, "分红数量有误"
         else:
@@ -92,7 +92,7 @@ def check_stock_data():
         commission = round_up(abs(volume) * 0.00016)
         stamp_tax = 0.0
         other = round_up(abs(volume) * 0.00002)
-        if buy_type == "分红" or buy_type == "中签":
+        if buy_type == "分红" or buy_type == "股息" or buy_type == "中签":
             commission = other = 0.0
         else:
             if code[:2] == "hk":
@@ -156,7 +156,7 @@ def get_fund_data():
         elif buy_type == "卖出":
             code2stock_summary[code].add(table.cell(line, headers.index('份额')).value, 0.0,
                                          table.cell(line, headers.index('总额')).value)
-        elif buy_type == "分红":
+        elif buy_type in {"分红", "股息"}:
             code2stock_summary[code].add(table.cell(line, headers.index('份额')).value, 0.0,
                                          table.cell(line, headers.index('总额')).value)
         else:
@@ -172,7 +172,7 @@ def get_all_flow():
     table = get_table_from_file('场内交割单')
     stock_trade = zip(get_row_by_name(table, '时间', False), get_row_by_name(table, '买卖方向', False), get_row_by_name(table, '股票代码', False), get_row_by_name(table, '成交数量', False), get_row_by_name(table, '发生金额', False))
     for (time, type, code, position, flow) in stock_trade:
-        if type == "分红": #todo 分红只考虑分现金，不考虑拆股
+        if type == "分红" or type == "股息": #todo 分红只考虑分现金，不考虑拆股
             position = 0
         flows.append(Flow(time, code, position, flow))
 
