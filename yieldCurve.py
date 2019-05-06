@@ -79,8 +79,6 @@ def stock():
     date_now = ""
     data = {'code': [], 'stock': [], 'position': [], 'nav': [], 'profit': [], 'rate%': [], 'irr_rate%': []}
     for stock_code in code2stock_summary.keys():
-        if stock_code == "132018": ## TODO 三峡EB
-            continue
         nav, date_now = priceCrawler.get_sina_price(stock_code)
         if stock_code[:2] == "hk":
             nav = nav * priceCrawler.get_hk_rate()
@@ -100,7 +98,13 @@ def stock():
     pd.set_option('display.width', None)
     df = pd.DataFrame(data)
     df = df.sort_values(by='irr_rate%', ascending=False)
+
+    #显示所有列
+    pd.set_option('display.max_columns', None)
+    #显示所有行
+    pd.set_option('display.max_rows', None)
     print(df)
+    df.to_csv("stock.csv", index=False)
 
     print(date_now.date(), "irr_rate_all", round(stock_irr("all", tas),2))
     return
@@ -130,7 +134,13 @@ def fund():
     df = pd.DataFrame(data)
     df = df.sort_values(by='irr_rate%', ascending=False)
 
+    #显示所有列
+    pd.set_option('display.max_columns', None)
+    #显示所有行
+    pd.set_option('display.max_rows', None)
     print(df)
+    df.to_csv("fund.csv", index=False)
+
     print(date_now.date(), "irr_rate_all", round(stock_irr("all", tas), 2))
     return
 
