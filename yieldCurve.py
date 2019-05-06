@@ -45,6 +45,16 @@ def stock_irr(stock_code, tas):
         print("irr error: stock_code=", stock_code)
         return -100.0
 
+def bet2cost():
+    cost = [7000, 2900, 3900, 24000, 33000]
+    name = ["世界杯入市", "电动车", "显示器", "东王庄房租", "展春园房租"]
+    ret = []
+    sum = 0.0
+    for i in range(len(cost)):
+        sum += cost[i]
+        ret.append({"name": name[i], "yAxis": sum})
+    return ret
+
 def bet():
     dates, profits = excelReader.get_bet_data()
 
@@ -57,12 +67,12 @@ def bet():
     line1 = Line("日均盈利走势图")
     line1.add("日均盈利", xs_date, ys_perday, is_smooth=True,
              mark_line=["min", "max", "average"],
-             mark_line_raw=[{"name": '世界杯入场', "yAxis": 7000}],
              mark_point=['min', 'max', 'average', {"coord": [xs_date[-1], ys_perday[-1]], "name": "now"}],
              is_datazoom_show=True, xaxis_name="时间", yaxis_name="元", tooltip_trigger="axis")
 
     line2 = Line("日均盈利走势图")
     line2.add("总盈亏", xs_date, ys, is_smooth=True,
+              mark_line_raw=bet2cost(),
               is_datazoom_show=True, xaxis_name="时间", yaxis_name="元", tooltip_trigger="axis",is_yaxis_show=False)
 
     overlap = Overlap(width=1200, height=600)
@@ -147,8 +157,8 @@ def fund():
 
 if __name__ == "__main__":
     bet()
-    stock()
-    fund()
+    #stock()
+    #fund()
     #todo 总irr计算，不同时间投入的总资金，货币基金按照每日万一计算，
     #tas = [(date(2010, 12, 29), -10000),
     #       (date(2012, 1, 25), 20),
