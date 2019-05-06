@@ -56,7 +56,9 @@ def bet():
 
     line1 = Line("日均盈利走势图")
     line1.add("日均盈利", xs_date, ys_perday, is_smooth=True,
-             mark_line=["min", "max", "average"], mark_point=['min', 'max', 'average', {"coord": [xs_date[-1], ys_perday[-1]], "name": "now"}],
+             mark_line=["min", "max", "average"],
+             mark_line_raw=[{"name": '世界杯入场', "yAxis": 7000}],
+             mark_point=['min', 'max', 'average', {"coord": [xs_date[-1], ys_perday[-1]], "name": "now"}],
              is_datazoom_show=True, xaxis_name="时间", yaxis_name="元", tooltip_trigger="axis")
 
     line2 = Line("日均盈利走势图")
