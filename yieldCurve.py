@@ -45,9 +45,9 @@ def stock_irr(stock_code, tas):
         print("irr error: stock_code=", stock_code)
         return -100.0
 
-def bet2cost():
-    cost = [7000, 2900, 3900, 24000, 33000]
-    name = ["世界杯入市", "电动车", "显示器", "东王庄房租", "展春园房租"]
+def bet2cost(interest_days):
+    cost = [interest_days*10, 7000, 2900, 3879.6, 24000, 33000]
+    name = ["利息", "世界杯入市", "电动车", "显示器", "东王庄房租", "展春园房租"]
     ret = []
     sum = 0.0
     for i in range(len(cost)):
@@ -72,7 +72,7 @@ def bet():
 
     line2 = Line("日均盈利走势图")
     line2.add("总盈亏", xs_date, ys, is_smooth=True,
-              mark_line_raw=bet2cost(),
+              mark_line_raw=bet2cost(xs_delta[-1]),
               is_datazoom_show=True, xaxis_name="时间", yaxis_name="元", tooltip_trigger="axis",is_yaxis_show=False)
 
     overlap = Overlap(width=1200, height=600)
