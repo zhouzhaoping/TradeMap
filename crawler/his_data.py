@@ -55,7 +55,7 @@ if __name__ == "__main__":
     #print(get_his_data("600029", date))
     # 场内基金
     #print(get_his_data("501029", date))
-    print(get_his_data("162411", datetime.datetime.strptime("2018/12/11", '%Y/%m/%d').date()))
+    print(get_his_data("162411", datetime.datetime.strptime("2018-06-08", '%Y-%m-%d').date()))
     # 港股
     #print(get_his_data("hk00981", date))
     # 上证港股通结算汇率

@@ -46,8 +46,8 @@ def stock_irr(stock_code, tas):
         return -100.0
 
 def bet2cost(interest_days):
-    cost = [interest_days*10, 7000, 7000, 2900, 3879.6, 24000, 33000]
-    name = ["利息", "世界杯入市", "手术", "电动车", "显示器", "东王庄房租", "展春园房租"]
+    cost = [interest_days*10, 7000, 2900, 7000, 3879.6, 24000, 33000]
+    name = ["利息", "世界杯入市", "电动车",  "手术", "显示器", "东王庄房租", "展春园房租"]
     ret = []
     sum = 0.0
     for i in range(len(cost)):
