@@ -5,7 +5,7 @@ from crawler.baostock_api import *
 from crawler.cache import *
 
 
-def get_his_data(stockcode, date):
+def get_his_data(stockcode, date, default=True):
     #print(stockcode, date)
     # 00-深证A股，60-上证A股，300-创业板
     # 15、16、18-深证场内基金，50、51、52-上证场内基金
@@ -35,7 +35,7 @@ def get_his_data(stockcode, date):
         result = -1
 
     # for qdii 和 停牌
-    if result < 0:
+    if result < 0 and default:
         print("get error", stockcode, date)
         result = get_his_data(stockcode, date - datetime.timedelta(1))
         # recache

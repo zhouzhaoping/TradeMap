@@ -1,4 +1,6 @@
 import pickle
+import os
+
 
 # todo main cache pool
 his_data_file = "data/his_data.pkl"
