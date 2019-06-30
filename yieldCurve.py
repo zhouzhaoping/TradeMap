@@ -142,6 +142,7 @@ def fund():
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     pd.set_option('display.width', None)
+    pd.set_option('display.float_format', lambda x: '%.2f' % x)
     df = pd.DataFrame(data)
     df = df.sort_values(by='irr_rate%', ascending=False)
 
@@ -158,8 +159,8 @@ def fund():
 
 if __name__ == "__main__":
     bet()
-    #stock()
-    #fund()
+    stock()
+    fund()
     #todo 总irr计算，不同时间投入的总资金，货币基金按照每日万一计算，
     #tas = [(date(2010, 12, 29), -10000),
     #       (date(2012, 1, 25), 20),
