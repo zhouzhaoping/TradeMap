@@ -96,7 +96,7 @@ def check_stock_data():
             commission = other = 0.0
         else:
             if code[:2] == "hk":
-                # TODO
+                # TODO need to check
                 commission = table.cell(line, headers.index('手续费')).value
                 stamp_tax = table.cell(line, headers.index('印花税')).value
                 other = table.cell(line, headers.index('其他杂费')).value
@@ -110,10 +110,13 @@ def check_stock_data():
                     commission = 0.1
                 other = 0
             elif code[:2] in {"11", "12"}:
-                commission = round_up(abs(volume) * 0.0001)
+                if code[:2] == "12":
+                    commission = round_up(abs(volume) * 0.0001)
+                else:
+                    commission = round_up(abs(volume) * 0.0002)
+                    if commission < 1.0:
+                        commission = 1.0
                 other = 0
-                if code[:2] == "11" and commission < 1.0:
-                    commission = 1.0
             else:
                 assert False, "stock code error"
         assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
