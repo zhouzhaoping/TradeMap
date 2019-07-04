@@ -5,23 +5,28 @@ import datetime
 from pyecharts import Line, Overlap
 
 grid = [1.1, 1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5, 0.45, 0.4]
+#[0.9328000000000001, 0.848, 0.8056, 0.7632, 0.7208, 0.6784, 0.636, 0.5935999999999999, 0.5512, 0.5087999999999999, 0.46640000000000004, 0.424, 0.3816, 0.3392]
 stock_position = [0]*14
 cash = 130000.0
 buylevel = 10000.0
 curlevel = -1
 
-def trade(price):
+def trade(price, datestr):
     global curlevel
     global cash
     if curlevel < 0:#initial
         for i in range(len(grid)):
             grid[i] = grid[i] * price
-        print("initial buy at", price)
+        print(grid)
+        print(datestr)
+        print("initial buy at", price, "level at 1")
         cash -= buylevel
         stock_position[1] = buylevel * (1 - 0.00016) / price
         curlevel = 1
     elif curlevel == 0 and stock_position[1] == 0.0:# Empty position
         if price <= grid[1]:
+            print(datestr)
+            print("initial buy at", price, "level at 1")
             cash -= buylevel
             stock_position[1] = buylevel * (1 - 0.00016) / price
             curlevel = 1
@@ -30,7 +35,8 @@ def trade(price):
                 level += 1
             while curlevel + 1 < level:
                 curlevel += 1
-                print("buy at", price)
+                print(datestr)
+                print("buy at", price, "level at", curlevel)
                 cash -= buylevel
                 stock_position[curlevel] = buylevel * (1 - 0.00016) / price
     else:
@@ -38,13 +44,15 @@ def trade(price):
         while price < grid[level]:
             level += 1
         while curlevel > 0 and curlevel > level:
-            print("sell at", price)
+            print(datestr)
+            print("sell at", price, "level at", curlevel)
             cash += stock_position[curlevel] * price * (1 - 0.00016)
             stock_position[curlevel] = 0
             curlevel -= 1
         while curlevel + 1 < level:
             curlevel += 1
-            print("buy at", price)
+            print(datestr)
+            print("buy at", price, "level at", curlevel)
             cash -= buylevel
             stock_position[curlevel] = buylevel * (1 - 0.00016) / price
     sum = cash
@@ -67,7 +75,7 @@ def test():
         #print(row["calendar_date"], curprice)
         dates.append(curdate)
         price.append(curprice)
-        assets.append(trade(curprice))
+        assets.append(trade(curprice, row["calendar_date"]))
         #print(row["calendar_date"], assets[-1])
     return dates, price
 
