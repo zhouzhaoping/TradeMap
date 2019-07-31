@@ -160,7 +160,7 @@ def fund():
 if __name__ == "__main__":
     bet()
     stock()
-    fund()
+    #fund()
     #todo 总irr计算，不同时间投入的总资金，货币基金按照每日万一计算，
     #tas = [(date(2010, 12, 29), -10000),
     #       (date(2012, 1, 25), 20),
