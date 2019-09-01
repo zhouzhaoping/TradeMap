@@ -73,7 +73,7 @@ def get_sina_price(stock_code):
             date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2019-07-31", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2019-08-31", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html
@@ -83,13 +83,15 @@ def get_sina_price(stock_code):
 
 def get_hk_rate():
     time_now = time.strftime("%Y%m%d", time.localtime())
+    print(time_now)
+    time_now = "20190827"
     response = requests.get(
         'http://query.sse.com.cn/commonSoaQuery.do?&jsonCallBack=jsonpCallback'
         + str(math.floor(random.random() * (100000 + 1))) +
         '&updateDate=20190315&updateDateEnd=' + time_now + '&sqlId=FW_HGT_JSHDBL',
         headers={'Referer': 'http://www.sse.com.cn/services/hkexsc/disclo/ratios/'}
     )
-    #print(response.text)
+    print(response.text)
     j = json.loads(response.text[19:-1])
     return float(j['result'][0]['sellPrice'])
 
@@ -97,4 +99,4 @@ if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
     #get_fund_price("159910")
     #print(get_sina_price("300122"))  #http://hq.sinajs.cn/list=of160311
-    get_hk_rate()
+    print(get_hk_rate())

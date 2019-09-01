@@ -92,7 +92,7 @@ def check_stock_data():
         commission = round_up(abs(volume) * 0.00016)
         stamp_tax = 0.0
         other = round_up(abs(volume) * 0.00002)
-        if buy_type == "分红" or buy_type == "股息" or buy_type == "中签":
+        if buy_type == "分红" or buy_type == "股息" or buy_type == "中签" or table.cell(line, headers.index('委托号')).value == 5397:#平银转债债转股
             commission = other = 0.0
         else:
             if code[:2] == "hk":
@@ -119,6 +119,7 @@ def check_stock_data():
                 other = 0
             else:
                 assert False, "stock code error"
+
         assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
         if buy_type != "股息":
             assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
