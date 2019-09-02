@@ -96,14 +96,13 @@ def get_sina_price(stock_code):
 def get_hk_rate():
     time_now = time.strftime("%Y%m%d", time.localtime())
     print(time_now)
-    time_now = "20190827"
     response = requests.get(
         'http://query.sse.com.cn/commonSoaQuery.do?&jsonCallBack=jsonpCallback'
         + str(math.floor(random.random() * (100000 + 1))) +
         '&updateDate=20190315&updateDateEnd=' + time_now + '&sqlId=FW_HGT_JSHDBL',
         headers={'Referer': 'http://www.sse.com.cn/services/hkexsc/disclo/ratios/'}
     )
-    print(response.text)
+    #print(response.text)
     j = json.loads(response.text[19:-1])
     return float(j['result'][0]['sellPrice'])
 
