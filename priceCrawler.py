@@ -50,30 +50,42 @@ def get_sina_price(stock_code):
     # 15、16、18-深证场内基金，50、51、52-上证场内基金
     # 12-深证转债，11-上证转债
     if stock_code[:2] == "hk":
-        url = url.replace("$stock_code", stock_code)
+        pass
     elif stock_code[:2] in {"60", "50", "51", "52", "11", "13"}:# 13 for EB
-        url = url.replace("$stock_code", "sh" + stock_code)
+        stock_code = "sh" + stock_code
     elif stock_code[:2] in {"00", "30", "15", "16", "18", "12"}:
-        url = url.replace("$stock_code", "sz" + stock_code)
+        stock_code = "sz" + stock_code
     else:
         assert False, "stock code error"
+    url = url.replace("$stock_code", stock_code)
     r = requests.get(url)
     #print(url)
     result = r.content.decode('GBK')
     #print(result)
 
     try:
-        curprice = result.split(",")[3]
+        #print("try", "code", stock_code, "curprice", result.split(",")[3], result.split(",")[6], "date_now",
+         #     result.split(",")[-4], "date_now", result.split(",")[-3], "date_now", result.split(",")[-2])
+
+        if stock_code[:2] == "hk":
+            curprice = result.split(",")[6]
+        else:
+            curprice = result.split(",")[3]
+
         if curprice == '0.000':
             print("停牌" + stock_code)
             curprice = result.split(",")[2]
-        if stock_code[:2] == "hk":
-            date_now = datetime.datetime.strptime(result.split(",")[-2], '%Y/%m/%d')
-        else:
+        if stock_code[:2] == "sh":
+            date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
+        elif stock_code[:2] == "sz":
             date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
+        else:
+            date_now = datetime.datetime.strptime(result.split(",")[-2], '%Y/%m/%d')
+
+        #print(stock_code, curprice, date_now)
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2019-07-31", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2019-08-01", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html

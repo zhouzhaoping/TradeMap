@@ -46,8 +46,8 @@ def stock_irr(stock_code, tas):
         return -100.0
 
 def bet2cost(interest_days, cur_profit, day_delta):
-    cost = [interest_days*10, 7000, 2900, 7000, 3879.6, 3800, 24000, 33000]
-    name = ["利息", "世界杯入市", "电动车", "手术", "显示器", "驾校", "东王庄房租", "展春园房租"]
+    cost = [interest_days*10, 7000, 2900, 7000, 3879.6, 3800, 24000, 33000, 1308]
+    name = ["利息", "世界杯入市", "电动车", "手术", "显示器", "驾校", "东王庄房租", "展春园房租", "电动车电池"]
     ret = []
     sum = 0.0
     for i in range(len(cost)):
@@ -134,7 +134,7 @@ def fund():
         data['code'].append(stock_code)
         data['stock'].append(code2stock_summary[stock_code].name)
         data['position'].append(code2stock_summary[stock_code].position)
-        data['nav'].append(code2stock_summary[stock_code].position)
+        data['nav'].append(nav)
         data['profit'].append(round(code2stock_summary[stock_code].profit, 2))
         data['rate%'].append(round(code2stock_summary[stock_code].rate, 2))
         data['irr_rate%'].append(round(stock_irr(stock_code, tas), 2))
@@ -160,7 +160,7 @@ def fund():
 if __name__ == "__main__":
     bet()
     stock()
-    #fund()
+    fund()
     #todo 总irr计算，不同时间投入的总资金，货币基金按照每日万一计算，
     #tas = [(date(2010, 12, 29), -10000),
     #       (date(2012, 1, 25), 20),
