@@ -145,6 +145,7 @@ def fund():
     pd.set_option('display.float_format', lambda x: '%.2f' % x)
     df = pd.DataFrame(data)
     df = df.sort_values(by='irr_rate%', ascending=False)
+    #df.axis
 
     #显示所有列
     pd.set_option('display.max_columns', None)
