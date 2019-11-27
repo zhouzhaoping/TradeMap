@@ -119,8 +119,8 @@ def check_stock_data():
                 other = 0
             else:
                 assert False, "stock code error"
-
-        assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
+        if table.cell(line, headers.index('说明')).value != '光大周彦伶':
+            assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
         if buy_type != "股息":
             assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
         if table.cell(line, headers.index('委托号')).value != 25037:
