@@ -32,5 +32,16 @@ def insert_cache(key, value):
     dict[key] = value
     save_cache(dict)
 
+def get(key):
+    with open(his_data_file, 'rb') as f:
+        try:
+            dict = pickle.load(f)
+        except:
+            dict = {}
+    if key in dict.keys():
+        return dict[key]
+    else:
+        return None
+
 if __name__ == "__main__":
     print_cache_all()

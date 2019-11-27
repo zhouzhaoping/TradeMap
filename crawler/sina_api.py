@@ -23,6 +23,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
     #print(url)
     r = requests.get(url)
     result = r.content.decode('GBK')
+    #print(result)
     bs = BeautifulSoup(result, "html.parser")
     table = bs.find('table', id='FundHoldSharesTable')
     #print(table)
