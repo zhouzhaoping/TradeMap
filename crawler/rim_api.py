@@ -11,9 +11,9 @@ class RimValue:
         self.vp = 0.0
 
     def dump(self, jsonstr):
-        self.code = jsonstr["code"]
+        self.code = jsonstr["code"][7:].lower() + '.' + jsonstr["code"][:6]
         self.name = jsonstr["name"]
-        self.vp = jsonstr["RIMResult"]["vp"]
+        self.vp = float(jsonstr["RIMResult"]["vp"])
 
     def __str__(self):
         return self.code + " " + self.name + " " + str(self.vp)
