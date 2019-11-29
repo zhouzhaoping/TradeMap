@@ -107,7 +107,7 @@ def stock():
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     pd.set_option('display.width', None)
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data, columns=['code', 'stock', 'position', 'nav', 'profit', 'rate%', 'irr_rate%'])
     df = df.sort_values(by='irr_rate%', ascending=False)
 
     #显示所有列
@@ -143,7 +143,7 @@ def fund():
     pd.set_option('display.unicode.east_asian_width', True)
     pd.set_option('display.width', None)
     pd.set_option('display.float_format', lambda x: '%.2f' % x)
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data, columns=['code', 'stock', 'position', 'nav', 'profit', 'rate%', 'irr_rate%'])
     df = df.sort_values(by='irr_rate%', ascending=False)
     #df.axis
 
