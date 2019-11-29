@@ -92,6 +92,8 @@ def check_stock_data():
         commission = round_up(abs(volume) * 0.00016)
         stamp_tax = 0.0
         other = round_up(abs(volume) * 0.00002)
+        if code[:2] in {"00"} and line > 416: # 光大不收深证
+            other = 0.0
         if buy_type == "分红" or buy_type == "股息" or buy_type == "中签" or table.cell(line, headers.index('委托号')).value == 5397:#平银转债债转股
             commission = other = 0.0
         else:
@@ -124,9 +126,10 @@ def check_stock_data():
         if buy_type != "股息":
             assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
         if table.cell(line, headers.index('委托号')).value != 25037:
-            assert table.cell(line, headers.index('其他杂费')).value == other, "股票其它杂费错误"
+            assert table.cell(line, headers.index('其他杂费')).value == other, "股票其它杂费错误" + str(table.cell(line,
+                                                                                                       headers.index('委托号')).value)
 
-        # 计算年化率
+            # 计算年化率
         tas.append((code, xlrd.xldate.xldate_as_datetime(table.cell(line, headers.index('时间')).value, 0),
                     table.cell(line, headers.index('发生金额')).value))
     return code2stock_summary, tas

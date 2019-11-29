@@ -4,8 +4,9 @@ from crawler.baostock_api import get_his_trade_date_firstday
 import datetime
 from backtest.BuyList import *
 from crawler.baostock_api import get_stock_his_price, his_hs300
+from crawler.cache import print_cache_all
 
-# 共识：沪深300；100左右的时候大概能选出30只股票
+# 共识：沪深300，每月调仓；100左右的时候大概能选出30只股票
 
 # 无加权
 # 10 - 106249.2595360303
@@ -21,6 +22,11 @@ from crawler.baostock_api import get_stock_his_price, his_hs300
 # 10 - 102562.00909803095
 # 20 - 105935.04614079969
 # 100 - 106580.04864030385
+
+# 因子平均值控制仓位 + 无加权
+# 10 - 106030.68946882138
+# 20 - 107216.61528397526
+# 100 - 107375.15068153891
 
 # 因子筛选？2？；用大集合的平均因子变动来控制仓位？
 # 每周调仓
@@ -41,7 +47,6 @@ def gen_buy_list(trade_days, candidateLen=20):
                 if count >= candidateLen:
                     break
         buyList.countPosition()
-        print(buyList)
         buyLists.append(buyList)
     return buyLists
 
@@ -58,11 +63,16 @@ def rim_test(buyLists):
                 print("sell", buyLists[list_i - 1].rates[candidate_i], buyLists[list_i - 1].names[candidate_i], get_stock_his_price(buyLists[list_i - 1].codes[candidate_i], buyLists[list_i-1].date), get_stock_his_price(buyLists[list_i - 1].codes[candidate_i], buyLists[list_i].date))
             print(buyLists[list_i].date, money)
         for candidate_i in range(len(buyLists[list_i].codes)):# 买入
-            stock[candidate_i] = money * buyLists[list_i].position / buyLists[list_i].ratesum * buyLists[list_i].rates[candidate_i] / float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
+            stock[candidate_i] = money * buyLists[list_i].position / len(buyLists[list_i].rates) / \
+                                 float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
+            #stock[candidate_i] = money * buyLists[list_i].position / buyLists[list_i].ratesum * buyLists[
+        # list_i].rates[candidate_i] / float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
         money = money * (1 - buyLists[list_i].position)
 
 if __name__ == "__main__":
+    #print(his_hs300(datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()))
+    #buyLists = gen_buy_list([datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()], 101)
     trade_days = get_his_trade_date_firstday("2016-01-01", "2019-11-01")
-    buyLists = gen_buy_list(trade_days, 101)
+    buyLists = gen_buy_list(trade_days, 20)
     rim_test(buyLists)
 

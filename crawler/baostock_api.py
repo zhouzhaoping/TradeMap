@@ -57,6 +57,15 @@ def get_his_trade_date_firstday(start_date="2018-01-27", end_date="2019-05-01"):
     return trade_days
 
 
+def get_his_trade_date_firstday_of_week(start_date="2018-01-27", end_date="2019-05-01"):
+    result = get_his_trade_date_clear(start_date, end_date)
+    trade_days = []
+    for day in result:
+        if day.weekday() == 0:
+            trade_days.append(day)
+    return trade_days
+
+
 def get_stock_his_price(stockcode, date, ifcache=True):
     dict = get_cache()
     if ifcache and (stockcode, date) in dict.keys():
@@ -143,4 +152,5 @@ if __name__ == "__main__":
     #print(trade_days[0], type(trade_days[0]))
     #print(get_his_trade_date_firstday())
     #print(get_stock_his_price("SH.600000", datetime.datetime.strptime("2019-06-06", '%Y-%m-%d').date(), False))
-    print(his_hs300(datetime.datetime.strptime("2019-06-06", '%Y-%m-%d').date()))
+    print(his_hs300(datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()))
+    #print(get_his_trade_date_firstday_of_week())

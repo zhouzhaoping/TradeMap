@@ -17,6 +17,7 @@ class BuyList:
         self.ratesum += rate
 
     def countPosition(self):
+        print(self)
         if self.ratesum / len(self.codes) * 0.3 < 1:
             self.position = self.ratesum / len(self.codes) * 0.3
 

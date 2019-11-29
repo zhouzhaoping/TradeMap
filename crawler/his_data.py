@@ -1,7 +1,6 @@
 from crawler.sina_api import *
 from crawler.xueqiu_api import *
 from crawler.sse_api import *
-from crawler.baostock_api import *
 from crawler.cache import *
 
 
@@ -12,7 +11,7 @@ def get_his_data(stockcode, date, default=True):
     # 12-深证转债，11-上证转债
 
     # 未上市债券
-    if stockcode in {"128079", "127014", "113545", "113546", "110059"}:
+    if stockcode in {"123035", "128080", "113549"}:
         return 100.0
 
     try:
