@@ -4,4 +4,7 @@
 mysql
 root:123456
 
+## data source
+baostock、tushare
+
 ## backtest step

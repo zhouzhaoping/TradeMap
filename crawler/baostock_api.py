@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from crawler.cache import get_cache, save_cache
 import calendar
 
-
+# 获取交易日
 def get_his_trade_date(start_date="2018-01-27", end_date="2019-05-01"):
     #### 登陆系统 ####
     lg = bs.login(user_id="anonymous", password="123456")
@@ -151,6 +151,6 @@ if __name__ == "__main__":
     #trade_days = get_his_trade_date_clear()
     #print(trade_days[0], type(trade_days[0]))
     #print(get_his_trade_date_firstday())
-    #print(get_stock_his_price("SH.600000", datetime.datetime.strptime("2019-06-06", '%Y-%m-%d').date(), False))
-    print(his_hs300(datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()))
+    print(get_stock_his_price("SH.600000", datetime.datetime.strptime("2020-06-06", '%Y-%m-%d').date(), False))
+    #print(his_hs300(datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()))
     #print(get_his_trade_date_firstday_of_week())

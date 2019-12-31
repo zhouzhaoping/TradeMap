@@ -11,22 +11,22 @@ def get_his_data(stockcode, date, default=True):
     # 12-深证转债，11-上证转债
 
     # 未上市债券
-    if stockcode in {"123035", "128080", "113549"}:
+    if stockcode in {"128082", "110063", "123036", "113029", "128087", "123037", "113030", "128088", "110064", "110065", "113558"}:
         return 100.0
 
     try:
         if stockcode[:2] in {"60", "50", "51", "52", "00", "30", "15", "16", "18"}:
-            result = get_stock_his_price(stockcode, date)
+            result = get_stock_his_price(stockcode, date)# todo 新浪接口反爬
         elif stockcode == "hkrate":
-            result = get_hk_his_rate(date)
+            result = get_hk_his_rate(date)# see接口
         elif stockcode[:2] == "hk":
-            result = get_hkstock_his_price(stockcode, date) * get_his_data("hkrate", date)
+            result = get_hkstock_his_price(stockcode, date) * get_his_data("hkrate", date) # 新浪接口
         elif stockcode[:2] == "12":
-            result = get_bond_his_rate("SZ" + stockcode, date)
+            result = get_bond_his_rate("SZ" + stockcode, date) # 雪球接口
         elif stockcode[:2] in {"11", "13"}: #  13 for sh.EB
-            result = get_bond_his_rate("SH" + stockcode, date)
+            result = get_bond_his_rate("SH" + stockcode, date) # 雪球接口
         elif stockcode[:2] == "of":
-            result = get_fund_his_price(stockcode, date)
+            result = get_fund_his_price(stockcode, date) # 新浪接口
         else:
             assert False, "stock error"
     except:
@@ -51,10 +51,10 @@ if __name__ == "__main__":
     #yesterday = datetime.datetime.now()-datetime.timedelta(days=2)
     #date = yesterday.date()
     # A股
-    #print(get_his_data("600029", date))
+    print(get_his_data("000651",  datetime.datetime.strptime("2019-11-12", '%Y-%m-%d').date()), False)
     # 场内基金
     #print(get_his_data("501029", date))
-    print(get_his_data("162411", datetime.datetime.strptime("2018-06-08", '%Y-%m-%d').date()))
+    #print(get_his_data("162411", datetime.datetime.strptime("2018-06-08", '%Y-%m-%d').date()))
     # 港股
     #print(get_his_data("hk00981", date))
     # 上证港股通结算汇率

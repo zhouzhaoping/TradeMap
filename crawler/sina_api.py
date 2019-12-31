@@ -20,10 +20,10 @@ def get_stock_his_price(stockcode, date, ifcache=True):
         "$stockcode.phtml?year=$year&jidu=$jidu"
     url = url.replace("$stockcode", stockcode).replace("$year", str(date.year)) \
         .replace("$jidu", str((date.month + 2)//3))
-    #print(url)
+    print(url)
     r = requests.get(url)
     result = r.content.decode('GBK')
-    #print(result)
+    print(result)
     bs = BeautifulSoup(result, "html.parser")
     table = bs.find('table', id='FundHoldSharesTable')
     #print(table)

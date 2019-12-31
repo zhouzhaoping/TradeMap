@@ -33,6 +33,16 @@ from crawler.cache import print_cache_all
 # 20 - 111461.22717042704
 # 100 - 106752.30352452073
 
+# 每周调仓 + 加权
+# 10 - 104675.7256480267
+# 20 - 108828.04746772519
+# 100 -105321.19122742178
+
+# 每周调仓 + 无加权 + 因子平均值控制仓位
+# 10 - 104925.46813696327
+# 20 - 109739.14276471404
+# 100 - 105373.6140630725
+
 # 因子筛选？2？；用大集合的平均因子变动来控制仓位？
 
 
@@ -68,12 +78,11 @@ def rim_test(buyLists):
                 print("sell", buyLists[list_i - 1].rates[candidate_i], buyLists[list_i - 1].names[candidate_i], get_stock_his_price(buyLists[list_i - 1].codes[candidate_i], buyLists[list_i-1].date), get_stock_his_price(buyLists[list_i - 1].codes[candidate_i], buyLists[list_i].date))
             print(buyLists[list_i].date, money)
         for candidate_i in range(len(buyLists[list_i].codes)):# 买入
-            stock[candidate_i] = money / len(buyLists[list_i].rates) / \
-                                 float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
-            #stock[candidate_i] = money * buyLists[list_i].position / buyLists[list_i].ratesum * buyLists[
-        # list_i].rates[candidate_i] / float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
-        #money = money * (1 - buyLists[list_i].position)
-        money = money * 0
+            #stock[candidate_i] = money / buyLists[list_i].ratesum * buyLists[list_i].rates[candidate_i] / \
+            #                     float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
+            stock[candidate_i] = money * buyLists[list_i].position / len(buyLists[list_i].rates) / float(get_stock_his_price(buyLists[list_i].codes[candidate_i], buyLists[list_i].date))
+        money = money * (1 - buyLists[list_i].position)
+        #money = money * 0
 
 if __name__ == "__main__":
     #print(his_hs300(datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()))
