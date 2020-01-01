@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import sessionmaker
-import MySQLdb
+
 Base = declarative_base() #生成一个SqlORM 基类
-engine = create_engine("mysql+mysqldb://root:123456@localhost:3306/trade", echo=True)
+engine = create_engine("mysql://root:123456@127.0.0.1:3306/trade", echo=True)
 
 #echo如果为True，那么当他执行整个代码的数据库的时候会显示过程
 #创建一个类继承Base基类
