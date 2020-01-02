@@ -3,7 +3,7 @@ import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
 from crawler.cache import get_cache, save_cache
-import calendar
+from crawler.Kdata import Kdata, SessionCls
 
 # 获取交易日
 def get_his_trade_date(start_date="2018-01-27", end_date="2019-05-01"):
@@ -66,11 +66,13 @@ def get_his_trade_date_firstday_of_week(start_date="2018-01-27", end_date="2019-
     return trade_days
 
 
-def get_stock_his_price(stockcode, date, ifcache=True):
-    dict = get_cache()
-    if ifcache and (stockcode, date) in dict.keys():
-        #print("hit")
-        return dict[stockcode, date]
+def get_stock_his_price(stockcode, date):
+    #创建与数据库的会话session class
+    #注意,这里返回给session的是个class,不是实例
+    session = SessionCls()
+    k = session.query(Kdata).filter_by(date=date, code=stockcode).first()
+    if k is not None:
+        return k.close
 
     #### 登陆系统 ####
     lg = bs.login()
@@ -91,16 +93,26 @@ def get_stock_his_price(stockcode, date, ifcache=True):
 
     #### 打印结果集 ####
     data_list = []
+    result = -1.0
     while (rs.error_code == '0') & rs.next():
         # 获取一条记录，将记录合并在一起
-        data_list.append(rs.get_row_data())
-    result = pd.DataFrame(data_list, columns=rs.fields)
+        data = rs.get_row_data()
+        data_list.append(Kdata(date=data[0], code=stockcode, close=data[1]))
+        if date == data[0]:
+            result = data[1]
 
-    for data in data_list:
-        dict[stockcode, datetime.datetime.strptime(data[0], '%Y-%m-%d').date()] = data[1]
+    #result = pd.DataFrame(data_list, columns=rs.fields)
 
-    if ifcache:
-        save_cache(dict)
+
+
+    #可以添加多个字段
+    session.add_all(data_list)
+    #修改字段名字,只要没提交,此时修改也没问题
+    #h2.hostname = 'ubuntu_test'
+    #支持数据回滚
+    #session.rollback()
+    #提交
+    session.commit()
 
     #### 结果集输出到csv文件 ####
     #print(result)
@@ -108,7 +120,7 @@ def get_stock_his_price(stockcode, date, ifcache=True):
     #### 登出系统 ####
     bs.logout()
 
-    return dict[stockcode, date]
+    return result
 
 def his_hs300(date, ifcache = True):
     dict = get_cache()
@@ -151,6 +163,9 @@ if __name__ == "__main__":
     #trade_days = get_his_trade_date_clear()
     #print(trade_days[0], type(trade_days[0]))
     #print(get_his_trade_date_firstday())
-    print(get_stock_his_price("SH.600000", datetime.datetime.strptime("2020-06-06", '%Y-%m-%d').date(), False))
+    #print(get_stock_his_price("sh.600000", datetime.datetime.strptime("2019-06-06", '%Y-%m-%d').date()))
+    #print(get_stock_his_price("sh.600000", datetime.datetime.strptime("2020-01-01", '%Y-%m-%d').date()))
+    #print(get_stock_his_price("sz.002936", datetime.datetime.strptime("2018-09-19", '%Y-%m-%d').date()))
+    print(get_stock_his_price("sh.501050", datetime.datetime.strptime("2019-09-19", '%Y-%m-%d').date()))
     #print(his_hs300(datetime.datetime.strptime("2018-09-03", '%Y-%m-%d').date()))
     #print(get_his_trade_date_firstday_of_week())

@@ -2,6 +2,7 @@ from crawler.sina_api import *
 from crawler.xueqiu_api import *
 from crawler.sse_api import *
 from crawler.cache import *
+from crawler.baostock_api import get_stock_his_price as bao_his
 
 
 def get_his_data(stockcode, date, default=True):
@@ -15,8 +16,12 @@ def get_his_data(stockcode, date, default=True):
         return 100.0
 
     try:
-        if stockcode[:2] in {"60", "50", "51", "52", "00", "30", "15", "16", "18"}:
-            result = get_stock_his_price(stockcode, date)# todo 新浪接口反爬
+        if stockcode[:2] in {"00", "30"}:
+            result = bao_his("sz." + stockcode, date)
+        elif stockcode[:2] in {"60"}:
+            result = bao_his("sh." + stockcode, date)
+        elif stockcode[:2] in {"50", "51", "52", "15", "16", "18"}:
+            result = get_stock_his_price(stockcode, date)# todo 场内基金，新浪接口反爬
         elif stockcode == "hkrate":
             result = get_hk_his_rate(date)# see接口
         elif stockcode[:2] == "hk":
