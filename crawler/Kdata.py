@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Date, Float, PrimaryKeyConstrain
 from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base() #生成一个SqlORM 基类
-engine = create_engine("mysql://root:123456@127.0.0.1:3306/trade", echo=True)
+engine = create_engine("mysql+pymysql://root:123456@127.0.0.1:3306/trade", echo=True)
 SessionCls = sessionmaker(bind=engine)
 #bind绑定
 

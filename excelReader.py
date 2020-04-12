@@ -81,6 +81,8 @@ def check_stock_data():
         elif buy_type == "分红" or buy_type == "股息":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
             assert code2stock_summary[code].position == -table.cell(line, headers.index('成交数量')).value, "分红数量有误"
+        elif buy_type == "红利补缴":
+            code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
         else:
             assert False, "stock buy_type error"
 
@@ -88,46 +90,48 @@ def check_stock_data():
         # 15、16、18-深证场内基金，50、51、52-上证场内基金
         # 12-深证转债，11-上证转债
         # 检查手续费
-        volume = table.cell(line, headers.index('成交金额')).value
-        commission = round_up(abs(volume) * 0.00016)
-        stamp_tax = 0.0
-        other = round_up(abs(volume) * 0.00002)
-        if code[:2] in {"00"} and line > 416: # 光大不收深证
-            other = 0.0
-        if buy_type == "分红" or buy_type == "股息" or buy_type == "中签" or table.cell(line, headers.index('委托号')).value == 5397:#平银转债债转股
-            commission = other = 0.0
-        else:
-            if code[:2] == "hk":
-                # TODO need to check
-                commission = table.cell(line, headers.index('手续费')).value
-                stamp_tax = table.cell(line, headers.index('印花税')).value
-                other = table.cell(line, headers.index('其他杂费')).value
-            elif code[:2] in {"00", "60", "30"}:
-                if commission < 5.0:
-                    commission = 5.0
-                if buy_type == "卖出":
-                    stamp_tax = round_up(abs(volume) * 0.001)
-            elif code[:2] in {"15", "16", "18", "50", "51", "52"}:
-                if commission < 0.1:
-                    commission = 0.1
-                other = 0
-            elif code[:2] in {"11", "12"}:
-                if code[:2] == "12":
-                    commission = round_up(abs(volume) * 0.0001)
-                else:
-                    commission = round_up(abs(volume) * 0.0002)
-                    if commission < 1.0:
-                        commission = 1.0
-                other = 0
+        if line <= 416:
+            volume = table.cell(line, headers.index('成交金额')).value
+            commission = round_up(abs(volume) * 0.00016)
+            stamp_tax = 0.0
+            other = round_up(abs(volume) * 0.00002)
+            if code[:2] in {"00"} and line > 416: # 光大不收深证
+                other = 0.0
+            if buy_type == "分红" or buy_type == "股息" or buy_type == "中签" or table.cell(line, headers.index('委托号')).value == 5397:#平银转债债转股
+                commission = other = 0.0
             else:
-                assert False, "stock code error"
-        if table.cell(line, headers.index('说明')).value != '光大周彦伶':
-            assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
-        if buy_type != "股息":
-            assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
-        if table.cell(line, headers.index('委托号')).value != 25037:
-            assert table.cell(line, headers.index('其他杂费')).value == other, "股票其它杂费错误" + str(table.cell(line,
-                                                                                                       headers.index('委托号')).value)
+                if code[:2] == "hk":
+                    # TODO need to check
+                    commission = table.cell(line, headers.index('手续费')).value
+                    stamp_tax = table.cell(line, headers.index('印花税')).value
+                    other = table.cell(line, headers.index('其他杂费')).value
+                elif code[:2] in {"00", "60", "30"}:
+                    if commission < 5.0:
+                        commission = 5.0
+                    if buy_type == "卖出":
+                        stamp_tax = round_up(abs(volume) * 0.001)
+                elif code[:2] in {"15", "16", "18", "50", "51", "52"}:
+                    if commission < 0.1:
+                        commission = 0.1
+                    other = 0
+                elif code[:2] in {"11", "12"}:
+                    if code[:2] == "12":
+                        commission = round_up(abs(volume) * 0.0001)
+                    else:
+                        commission = round_up(abs(volume) * 0.0002)
+                        if commission < 1.0:
+                            commission = 1.0
+                    other = 0
+                else:
+                    assert False, "stock code error"
+            if table.cell(line, headers.index('说明')).value != '光大周彦伶':
+                assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
+            if buy_type != "股息":
+                assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
+            if table.cell(line, headers.index('委托号')).value != 25037:
+                assert table.cell(line, headers.index('其他杂费')).value == other, str(other) +  "股票其它杂费错误" + str(table.cell(
+                    line,
+                                                                                                           headers.index('委托号')).value)
 
             # 计算年化率
         tas.append((code, xlrd.xldate.xldate_as_datetime(table.cell(line, headers.index('时间')).value, 0),
