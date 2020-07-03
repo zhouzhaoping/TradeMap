@@ -83,6 +83,9 @@ def check_stock_data():
             assert code2stock_summary[code].position == -table.cell(line, headers.index('成交数量')).value, "分红数量有误"
         elif buy_type == "红利补缴":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
+        elif buy_type == "送股":
+            code2stock_summary[code].add(
+                int(table.cell(line, headers.index('成交数量')).value), 0.0, 0.0)
         else:
             assert False, "stock buy_type error"
 

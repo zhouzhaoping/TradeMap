@@ -85,7 +85,7 @@ def get_sina_price(stock_code):
         #print(stock_code, curprice, date_now)
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2020-6-8", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2020-7-3", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html
@@ -102,7 +102,7 @@ def get_hk_rate():
         '&updateDate=20190315&updateDateEnd=' + time_now + '&sqlId=FW_HGT_JSHDBL',
         headers={'Referer': 'http://www.sse.com.cn/services/hkexsc/disclo/ratios/'}
     )
-    #print(response.text)
+    print(response.text)
     j = json.loads(response.text[19:-1])
     return float(j['result'][0]['sellPrice'])
 
