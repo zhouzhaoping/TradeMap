@@ -159,7 +159,7 @@ def fund():
 
 
 if __name__ == "__main__":
-    bet()
+    #bet()
     stock()
     fund()
     #todo 总irr计算，不同时间投入的总资金，货币基金按照每日万一计算，

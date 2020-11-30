@@ -55,6 +55,8 @@ def get_sina_price(stock_code):
         stock_code = "sh" + stock_code
     elif stock_code[:2] in {"00", "30", "15", "16", "18", "12"}:
         stock_code = "sz" + stock_code
+    elif stock_code[:2] in {"83"}: # for 新三板
+        stock_code = "sb" + stock_code
     else:
         assert False, "stock code error"
     url = url.replace("$stock_code", stock_code)
@@ -72,6 +74,9 @@ def get_sina_price(stock_code):
         else:
             curprice = result.split(",")[3]
 
+        if stock_code == "sz300859":
+            curprice = 7.19
+
         if curprice == '0.000':
             print("停牌" + stock_code)
             curprice = result.split(",")[2]
@@ -79,13 +84,15 @@ def get_sina_price(stock_code):
             date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
         elif stock_code[:2] == "sz":
             date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
+        elif stock_code[:2] == "sb":
+            date_now = datetime.datetime.strptime(result.split(",")[-9], '%Y-%m-%d')
         else:
             date_now = datetime.datetime.strptime(result.split(",")[-2], '%Y/%m/%d')
 
         #print(stock_code, curprice, date_now)
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2020-7-3", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2020-10-31", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html
@@ -95,19 +102,21 @@ def get_sina_price(stock_code):
 
 def get_hk_rate():
     time_now = time.strftime("%Y%m%d", time.localtime())
-    print(time_now)
+    #print(time_now)
     response = requests.get(
         'http://query.sse.com.cn/commonSoaQuery.do?&jsonCallBack=jsonpCallback'
         + str(math.floor(random.random() * (100000 + 1))) +
         '&updateDate=20190315&updateDateEnd=' + time_now + '&sqlId=FW_HGT_JSHDBL',
         headers={'Referer': 'http://www.sse.com.cn/services/hkexsc/disclo/ratios/'}
     )
-    print(response.text)
+    #print(response.text)
     j = json.loads(response.text[19:-1])
-    return float(j['result'][0]['sellPrice'])
+    return float(j['pageHelp']['data'][0]['sellPrice'])
 
 if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
-    print(get_fund_price("501018"))
+    #print(get_fund_price("501018"))
     #print(get_sina_price("300122"))  #http://hq.sinajs.cn/list=of160311
-    #print(get_hk_rate())
+    #print(get_sina_price("831010"))  #http://hq.sinajs.cn/list=sb831010
+    #print(get_sina_price("300859"))
+    print(get_hk_rate())
