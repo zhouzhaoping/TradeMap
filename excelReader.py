@@ -62,7 +62,7 @@ def check_stock_data():
         if code in code2name:
             assert name == code2name[code], "stock name and code conflict"
         elif name in code2name.values():
-            assert code == get_key(code2name, name), "stock name and code conflict"
+            assert code == get_key(code2name, name), "stock name and code conflict" + str(line) + " " + code
         else:
             code2name[code] = name
             code2stock_summary[code] = StockSummary(name, 0, 0.0, 0.0)
@@ -80,7 +80,7 @@ def check_stock_data():
                                          -table.cell(line, headers.index('发生金额')).value, 0.0)
         elif buy_type == "分红" or buy_type == "股息":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
-            assert code2stock_summary[code].position == -table.cell(line, headers.index('成交数量')).value, "分红数量有误"
+            assert code2stock_summary[code].position == -table.cell(line, headers.index('成交数量')).value, "分红数量有误"+str(line)
         elif buy_type == "红利补缴":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
         elif buy_type == "送股":
@@ -93,7 +93,7 @@ def check_stock_data():
         # 15、16、18-深证场内基金，50、51、52-上证场内基金
         # 12-深证转债，11-上证转债
         # 检查手续费
-        if line <= 416:
+        if line <= 1: # todo 不检查
             volume = table.cell(line, headers.index('成交金额')).value
             commission = round_up(abs(volume) * 0.00016)
             stamp_tax = 0.0
@@ -128,7 +128,7 @@ def check_stock_data():
                 else:
                     assert False, "stock code error"
             if table.cell(line, headers.index('说明')).value != '光大周彦伶':
-                assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
+                assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"+ str(line)
             if buy_type != "股息":
                 assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
             if table.cell(line, headers.index('委托号')).value != 25037:
