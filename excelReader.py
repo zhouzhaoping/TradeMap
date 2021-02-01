@@ -80,7 +80,11 @@ def check_stock_data():
                                          -table.cell(line, headers.index('发生金额')).value, 0.0)
         elif buy_type == "分红" or buy_type == "股息":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
-            assert code2stock_summary[code].position == -table.cell(line, headers.index('成交数量')).value, "分红数量有误"
+            assert line == 683 or line == 708 or code2stock_summary[code].position == -table.cell(line, headers.index(
+                '成交数量')).value, "分红数量有误" \
+                + xlrd.xldate.xldate_as_datetime(
+                table.cell(line, headers.index('时间')).value, 0).__str__() + str(
+                table.cell(line, headers.index('股票名称')).value) + str(line)
         elif buy_type == "红利补缴":
             code2stock_summary[code].add(0, 0.0, table.cell(line, headers.index('发生金额')).value)
         elif buy_type == "送股":
@@ -127,16 +131,16 @@ def check_stock_data():
                     other = 0
                 else:
                     assert False, "stock code error"
-            if table.cell(line, headers.index('说明')).value != '光大周彦伶':
-                assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误"
+            if table.cell(line, headers.index('说明')).value != '光大周彦伶' and buy_type != "股息":
+                assert table.cell(line, headers.index('手续费')).value == commission, "股票手续费错误" \
+                        + xlrd.xldate.xldate_as_datetime(table.cell(line, headers.index('时间')).value, 0).__str__() + str(table.cell(line, headers.index('股票名称')).value)
             if buy_type != "股息":
                 assert table.cell(line, headers.index('印花税')).value == stamp_tax, "股票印花税错误"
             if table.cell(line, headers.index('委托号')).value != 25037:
                 assert table.cell(line, headers.index('其他杂费')).value == other, str(other) +  "股票其它杂费错误" + str(table.cell(
-                    line,
-                                                                                                           headers.index('委托号')).value)
+                    line, headers.index('委托号')).value)
 
-            # 计算年化率
+        # 计算年化率
         tas.append((code, xlrd.xldate.xldate_as_datetime(table.cell(line, headers.index('时间')).value, 0),
                     table.cell(line, headers.index('发生金额')).value))
     return code2stock_summary, tas

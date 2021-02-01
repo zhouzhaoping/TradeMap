@@ -51,7 +51,7 @@ def get_sina_price(stock_code):
     # 12-深证转债，11-上证转债
     if stock_code[:2] == "hk":
         pass
-    elif stock_code[:2] in {"60", "50", "51", "52", "11", "13"}:# 13 for EB
+    elif stock_code[:2] in {"60", "68", "50", "51", "52", "11", "13"}:# 13 for EB; 68 for 科创板
         stock_code = "sh" + stock_code
     elif stock_code[:2] in {"00", "30", "15", "16", "18", "12"}:
         stock_code = "sz" + stock_code
@@ -61,9 +61,9 @@ def get_sina_price(stock_code):
         assert False, "stock code error"
     url = url.replace("$stock_code", stock_code)
     r = requests.get(url)
-    #print(url)
+    print(url)
     result = r.content.decode('GBK')
-    #print(result)
+    print(result)
 
     try:
         #print("try", "code", stock_code, "curprice", result.split(",")[3], result.split(",")[6], "date_now",
@@ -74,13 +74,16 @@ def get_sina_price(stock_code):
         else:
             curprice = result.split(",")[3]
 
-        if stock_code == "sz300859":
-            curprice = 7.19
+        # todo 中签未上市
+        #if stock_code == "sh605151":
+        #    return 16.13, datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
 
         if curprice == '0.000':
             print("停牌" + stock_code)
             curprice = result.split(",")[2]
         if stock_code[:2] == "sh":
+            date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
+        elif stock_code[:4] == "sz30":
             date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
         elif stock_code[:2] == "sz":
             date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
@@ -92,7 +95,7 @@ def get_sina_price(stock_code):
         #print(stock_code, curprice, date_now)
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2020-10-31", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2020-12-31", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html
@@ -101,6 +104,7 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
+    return 0.84061
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
@@ -110,13 +114,17 @@ def get_hk_rate():
         headers={'Referer': 'http://www.sse.com.cn/services/hkexsc/disclo/ratios/'}
     )
     #print(response.text)
+    #print(response.text[19:-1])
     j = json.loads(response.text[19:-1])
     return float(j['pageHelp']['data'][0]['sellPrice'])
 
 if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
     #print(get_fund_price("501018"))
-    #print(get_sina_price("300122"))  #http://hq.sinajs.cn/list=of160311
+    #print(get_sina_price("002027"))  #http://hq.sinajs.cn/list=sz002027
+    #print(get_sina_price("160311"))  #http://hq.sinajs.cn/list=of160311
     #print(get_sina_price("831010"))  #http://hq.sinajs.cn/list=sb831010
-    #print(get_sina_price("300859"))
+    #print(get_sina_price("605151"))
+    #print(get_sina_price("688777"))
+    print(get_sina_price("300003"))
     print(get_hk_rate())
