@@ -61,9 +61,9 @@ def get_sina_price(stock_code):
         assert False, "stock code error"
     url = url.replace("$stock_code", stock_code)
     r = requests.get(url)
-    print(url)
+    #print(url)
     result = r.content.decode('GBK')
-    print(result)
+    #print(result)
 
     try:
         #print("try", "code", stock_code, "curprice", result.split(",")[3], result.split(",")[6], "date_now",
@@ -102,7 +102,6 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
-    return 0.84061
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
