@@ -61,9 +61,15 @@ def get_sina_price(stock_code):
         assert False, "stock code error"
     url = url.replace("$stock_code", stock_code)
     r = requests.get(url)
-    #print(url)
+    print(url)
     result = r.content.decode('GBK')
     #print(result)
+    #"乐普医疗,31.300（今开）,31.620（昨收）,31.170（今收）,31.880（今高）,30.930（今低）,31.170,31.180,21180706（成交量）,660546544.000（成交额）,16389,
+    # 31.170,
+    # 107500,
+    # 31.160,
+    # 6100,
+    # 31.150,700,31.140,3800,31.130,2400,31.180,3400,31.190,20810,31.200,3100,31.210,11500,31.220,2021-03-04,15:36:00,00,D|1100|34287.000";
 
     try:
         #print("try", "code", stock_code, "curprice", result.split(",")[3], result.split(",")[6], "date_now",
@@ -77,14 +83,13 @@ def get_sina_price(stock_code):
         if curprice == '0.000':
             print("停牌" + stock_code)
             curprice = result.split(",")[2]
-        if stock_code[:5] == "sz300":
-            date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
-        elif stock_code[:2] == "sh":
-            date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
-        elif stock_code[:4] == "sz30":
+        if stock_code[:2] == "sh":
             date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
         elif stock_code[:2] == "sz":
-            date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
+            if result.split(",")[-1].startswith("D"): # 闭市后创业板使用这个
+                date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
+            else:
+                date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
         elif stock_code[:2] == "sb":
             date_now = datetime.datetime.strptime(result.split(",")[-9], '%Y-%m-%d')
         else:
@@ -115,13 +120,49 @@ def get_hk_rate():
     j = json.loads(response.text[19:-1])
     return float(j['pageHelp']['data'][0]['sellPrice'])
 
+# todo 合并get_sina_price接口
+# 返回-200不支持；返回-100当时未上市
+# 不支持场内基金、三板、转债、场外基金、香港？
+def get_sina_increase(stock_code):
+    url = "http://finance.sina.com.cn/realstock/company/$stock_code/qianfuquan.js"
+    # 00-深证A股，60-上证A股，300-创业板
+    # 15、16、18-深证场内基金，50、51、52-上证场内基金
+    # 12-深证转债，11-上证转债
+    if stock_code[:2] in {"60", "68"}:  # 13 for EB; 68 for 科创板
+        stock_code = "sh" + stock_code
+    elif stock_code[:2] in {"00", "30"}:
+        stock_code = "sz" + stock_code
+    else:
+        return [-200, -200, -200, -200, -200]
+    url = url.replace("$stock_code", stock_code)
+    r = requests.get(url)
+    #print(url)
+    result = r.content.decode('GBK')
+    #print(result)
+
+    pricelist = result.split("\"")
+    #print(pricelist)
+    oneday_inc = oneweek_inc = onemonth_inc = halfyear_inc = oneyear_inc = -100
+    try:
+        oneday_inc = float(pricelist[1]) / float(pricelist[1 + 1*2]) * 100 - 100
+        oneweek_inc = float(pricelist[1]) / float(pricelist[1 + 5*2]) * 100 - 100
+        onemonth_inc = float(pricelist[1]) / float(pricelist[1 + 20*2]) * 100 - 100
+        halfyear_inc = float(pricelist[1]) / float(pricelist[1 + 100*2]) * 100 - 100
+        oneyear_inc = float(pricelist[1]) / float(pricelist[1 + 200*2]) * 100 - 100
+    except:
+        pass
+
+    return [oneday_inc, oneweek_inc, onemonth_inc, halfyear_inc, oneyear_inc]
+
 if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
     #print(get_fund_price("501018"))
-    #print(get_sina_price("002027"))  #http://hq.sinajs.cn/list=sz002027
-    #print(get_sina_price("160311"))  #http://hq.sinajs.cn/list=of160311
-    #print(get_sina_price("831010"))  #http://hq.sinajs.cn/list=sb831010
-    #print(get_sina_price("605151"))
-    #print(get_sina_price("688777"))
-    print(get_sina_price("300003"))
-    print(get_hk_rate())
+    print(get_sina_increase("000001"))
+    print(get_sina_increase("002027"))  #http://hq.sinajs.cn/list=sz002027
+    #print(get_sina_increase("160311"))  #http://hq.sinajs.cn/list=of160311
+    #print(get_sina_increase("831010"))  #http://hq.sinajs.cn/list=sb831010
+    print(get_sina_increase("123067"))
+    print(get_sina_increase("688981"))
+    #print(get_sina_increase("832456"))
+    print(get_sina_increase("300003"))
+    #print(get_hk_rate())
