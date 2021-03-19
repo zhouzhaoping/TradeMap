@@ -86,7 +86,7 @@ def get_sina_price(stock_code):
         if stock_code[:2] == "sh":
             date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
         elif stock_code[:2] == "sz":
-            if result.split(",")[-1].startswith("D"): # 闭市后创业板使用这个
+            if result.split(",")[-1].startswith("D") or result.split(",")[-1].startswith("H"): # 闭市后创业板使用这个
                 date_now = datetime.datetime.strptime(result.split(",")[-4], '%Y-%m-%d')
             else:
                 date_now = datetime.datetime.strptime(result.split(",")[-3], '%Y-%m-%d')
@@ -107,6 +107,7 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
+    #return 0.84041
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
@@ -157,12 +158,12 @@ def get_sina_increase(stock_code):
 if __name__ == "__main__":
     #get_stock_price("SZ.300122", "2019-3-14")
     #print(get_fund_price("501018"))
-    print(get_sina_increase("000001"))
-    print(get_sina_increase("002027"))  #http://hq.sinajs.cn/list=sz002027
+    #print(get_sina_increase("000001"))
+    #print(get_sina_increase("002027"))  #http://hq.sinajs.cn/list=sz002027
     #print(get_sina_increase("160311"))  #http://hq.sinajs.cn/list=of160311
     #print(get_sina_increase("831010"))  #http://hq.sinajs.cn/list=sb831010
-    print(get_sina_increase("123067"))
-    print(get_sina_increase("688981"))
+    #print(get_sina_increase("123067"))
+    #print(get_sina_increase("688981"))
     #print(get_sina_increase("832456"))
-    print(get_sina_increase("300003"))
+    print(get_sina_price("300003"))
     #print(get_hk_rate())
