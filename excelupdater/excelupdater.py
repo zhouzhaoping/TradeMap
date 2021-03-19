@@ -98,6 +98,129 @@ def update_stock_price(excelpath):
         data_sheet2.cell(i, rate_col).value = xirr(mytas)
     wb.save(excelpath)
 
+
+def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
+    wb = openpyxl.load_workbook(excelpath, data_only=False)
+    data_sheet = wb.get_sheet_by_name("当前持仓")
+    headers = get_headers(data_sheet)
+    code_col = headers.index('股票代码') + 1
+    industry_col = headers.index('一级行业') + 1
+    equity_col = headers.index('总股本') + 1
+    foreign_col = headers.index('外资比') + 1
+    report2yuan_col = headers.index('财报货币-人民币') + 1
+    price2yuan_col = headers.index('股价货币-人民币') + 1
+    netprofit_col = headers.index('预测净利润(元)2022') + 1
+    grossmargin_col = headers.index('销售毛利率2020三季度') + 1
+    goodwillrate_col = headers.index('商誉净利润比2020三季度') + 1
+    inc_col = headers.index('一日涨幅') + 1
+
+    # 记录股票位置
+    code2row_dict = {}
+    row_num = data_sheet.max_row
+    for i in range(2, row_num + 1):
+        code2row_dict[data_sheet.cell(i, code_col).value] = i
+
+    # 更新A股基础信息
+    wb_a = openpyxl.load_workbook(a_shareinfo, data_only=False)
+    data_sheet_a = wb_a.get_sheet_by_name("选股结果")
+    headers_a = get_headers(data_sheet_a)
+    code_col_a = headers_a.index('股票代码') + 1
+    industry_col_a = headers_a.index('所属申万行业') + 1
+    netprofit_col_a = headers_a.index('预测净利润(元)') + 1
+    grossmargin_col_a = headers_a.index('销售毛利率(%)') + 1
+    goodwillrate_col_a = headers_a.index('{(}商誉{/}净利润{)}') + 1
+    equity_col_a = -1
+    foreign_col_a = -1
+    for i,x in enumerate(headers_a):
+        if x is None:
+            continue
+        elif x.startswith('总股本'):
+            equity_col_a = i + 1
+        elif x.startswith('陆股通持股占总股本比'):
+            foreign_col_a = i + 1
+
+    row_num_a = data_sheet_a.max_row
+    for i in range(3, row_num_a + 1):
+        if data_sheet_a.cell(i, code_col_a).value[:6] in code2row_dict.keys():
+            print("update " + data_sheet_a.cell(i, code_col_a).value[:6])
+            i_origin = code2row_dict[data_sheet_a.cell(i, code_col_a).value[:6]]
+            industry_name = data_sheet_a.cell(i, industry_col_a).value.split('--')
+            print(i_origin, industry_name, data_sheet_a.cell(i, equity_col_a).value,
+                  data_sheet_a.cell(i, foreign_col_a).value, data_sheet_a.cell(i, netprofit_col_a).value,
+                  data_sheet_a.cell(i, netprofit_col_a + 1).value, data_sheet_a.cell(i, netprofit_col_a + 2).value,
+                  data_sheet_a.cell(i, grossmargin_col_a).value, data_sheet_a.cell(i, grossmargin_col_a + 1).value,
+                  data_sheet_a.cell(i, goodwillrate_col_a).value, data_sheet_a.cell(i, goodwillrate_col_a + 1).value)
+            data_sheet.cell(i_origin, industry_col).value = industry_name[0]
+            data_sheet.cell(i_origin, industry_col + 1).value = industry_name[1]
+            data_sheet.cell(i_origin, industry_col + 2).value = industry_name[2]
+            data_sheet.cell(i_origin, equity_col).value = data_sheet_a.cell(i, equity_col_a).value
+            data_sheet.cell(i_origin, foreign_col).value = data_sheet_a.cell(i, foreign_col_a).value
+            data_sheet.cell(i_origin, report2yuan_col).value = 1
+            data_sheet.cell(i_origin, price2yuan_col).value = 1
+            data_sheet.cell(i_origin, netprofit_col).value = data_sheet_a.cell(i, netprofit_col_a).value
+            data_sheet.cell(i_origin, netprofit_col + 1).value = data_sheet_a.cell(i, netprofit_col_a + 1).value
+            data_sheet.cell(i_origin, netprofit_col + 2).value = data_sheet_a.cell(i, netprofit_col_a + 2).value
+            data_sheet.cell(i_origin, grossmargin_col).value = data_sheet_a.cell(i, grossmargin_col_a).value
+            data_sheet.cell(i_origin, grossmargin_col + 1).value = data_sheet_a.cell(i, grossmargin_col_a + 1).value
+            data_sheet.cell(i_origin, goodwillrate_col).value = data_sheet_a.cell(i, goodwillrate_col_a).value
+            data_sheet.cell(i_origin, goodwillrate_col + 1).value = data_sheet_a.cell(i, goodwillrate_col_a + 1).value
+    wb_a.close()
+
+    # 更新港股基础信息
+    wb_b = openpyxl.load_workbook(h_shareinfo, data_only=False)
+    data_sheet_b = wb_b.get_sheet_by_name("选股结果")
+    headers_b = get_headers(data_sheet_b)
+    print(headers_b)
+    code_col_b = headers_b.index('股票代码') + 1
+    industry_col_b = headers_b.index('所属恒生行业') + 1
+    netprofit_col_b = headers_b.index('预测净利润平均值(港元)') + 1
+    grossmargin_col_b = headers_b.index('销售毛利率(%)') + 1
+    goodwillrate_col_b = headers_b.index('商誉(港元)') + 1
+    inc_col_b = -1
+    equity_col_b = -1
+    for i, x in enumerate(headers_b):
+        if x is None:
+            continue
+        elif x.startswith('涨跌幅'):
+            inc_col_b = i + 1
+        elif x.startswith('总股本'):
+            equity_col_b = i + 1
+
+    row_num_b = data_sheet_b.max_row
+    for i in range(3, row_num_b + 1):
+        if str("hk0" + data_sheet_b.cell(i, code_col_b).value[:4]) in code2row_dict.keys():
+            print("update " + data_sheet_b.cell(i, code_col_b).value[:4])
+            i_origin = code2row_dict["hk0" + data_sheet_b.cell(i, code_col_b).value[:4]]
+            print(i_origin, data_sheet_b.cell(i, industry_col_b).value,
+                  data_sheet_b.cell(i, industry_col_b + 1).value, data_sheet_b.cell(i, industry_col_b + 2).value,
+                  data_sheet_b.cell(i, equity_col_b).value,
+                  data_sheet_b.cell(i, netprofit_col_b).value,
+                  data_sheet_b.cell(i, netprofit_col_b + 1).value, data_sheet_b.cell(i, netprofit_col_b + 2).value,
+                  data_sheet_b.cell(i, grossmargin_col_b).value, data_sheet_b.cell(i, grossmargin_col_b + 1).value,
+                  data_sheet_b.cell(i, goodwillrate_col_b).value, data_sheet_b.cell(i, goodwillrate_col_b + 1).value,
+                  data_sheet_b.cell(i, inc_col_b).value,
+                  data_sheet_b.cell(i, inc_col_b + 1).value, data_sheet_b.cell(i, inc_col_b + 2).value,
+                  data_sheet_b.cell(i, inc_col_b + 3).value, data_sheet_b.cell(i, inc_col_b + 4).value)
+            data_sheet.cell(i_origin, industry_col).value = data_sheet_b.cell(i, industry_col_b).value
+            data_sheet.cell(i_origin, industry_col + 1).value = data_sheet_b.cell(i, industry_col_b + 1).value
+            data_sheet.cell(i_origin, industry_col + 2).value = data_sheet_b.cell(i, industry_col_b + 2).value
+            data_sheet.cell(i_origin, equity_col).value = data_sheet_b.cell(i, equity_col_b).value
+            data_sheet.cell(i_origin, netprofit_col).value = data_sheet_b.cell(i, netprofit_col_b).value
+            data_sheet.cell(i_origin, netprofit_col + 1).value = data_sheet_b.cell(i, netprofit_col_b + 1).value
+            data_sheet.cell(i_origin, netprofit_col + 2).value = data_sheet_b.cell(i, netprofit_col_b + 2).value
+            data_sheet.cell(i_origin, grossmargin_col).value = data_sheet_b.cell(i, grossmargin_col_b).value
+            data_sheet.cell(i_origin, grossmargin_col + 1).value = data_sheet_b.cell(i, grossmargin_col_b + 1).value
+            data_sheet.cell(i_origin, goodwillrate_col).value = data_sheet_b.cell(i, goodwillrate_col_b).value
+            data_sheet.cell(i_origin, goodwillrate_col + 1).value = data_sheet_b.cell(i, goodwillrate_col_b + 1).value
+            data_sheet.cell(i_origin, inc_col).value = data_sheet_b.cell(i, inc_col_b).value
+            data_sheet.cell(i_origin, inc_col + 1).value = data_sheet_b.cell(i, inc_col_b + 1).value
+            data_sheet.cell(i_origin, inc_col + 2).value = data_sheet_b.cell(i, inc_col_b + 2).value
+            data_sheet.cell(i_origin, inc_col + 3).value = data_sheet_b.cell(i, inc_col_b + 3).value
+            data_sheet.cell(i_origin, inc_col + 4).value = data_sheet_b.cell(i, inc_col_b + 4).value
+    wb_b.close()
+
+    wb.save(excelpath)
+
 def update_hkrate(excelpath):
     wb = openpyxl.load_workbook(excelpath, data_only=False)
     sheet1 = wb.get_sheet_by_name("参数")  # 通过索引获取表格，一个文件里可能有多个sheet
@@ -114,5 +237,11 @@ if __name__ == '__main__':
     cfg.read('config.ini', encoding='UTF-8')
     filepath = cfg.get('file', 'position_path')
     update_position_price(filepath)
+
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
+
+    filepath = cfg.get('file', 'stock_path')
+    a_share_info_path = cfg.get('file', 'a_share_info_path')
+    h_share_info_path = cfg.get('file', 'h_share_info_path')
+    update_stock_basic_info(filepath, a_share_info_path, h_share_info_path)
