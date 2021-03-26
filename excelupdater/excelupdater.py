@@ -109,7 +109,7 @@ def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
     foreign_col = headers.index('外资比') + 1
     report2yuan_col = headers.index('财报货币-人民币') + 1
     price2yuan_col = headers.index('股价货币-人民币') + 1
-    netprofit_col = headers.index('预测净利润(元)2022') + 1
+    netprofit_col = headers.index('预测净利润(元)2023') + 1
     grossmargin_col = headers.index('销售毛利率2020三季度') + 1
     goodwillrate_col = headers.index('商誉净利润比2020三季度') + 1
     inc_col = headers.index('一日涨幅') + 1
@@ -148,6 +148,7 @@ def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
             print(i_origin, industry_name, data_sheet_a.cell(i, equity_col_a).value,
                   data_sheet_a.cell(i, foreign_col_a).value, data_sheet_a.cell(i, netprofit_col_a).value,
                   data_sheet_a.cell(i, netprofit_col_a + 1).value, data_sheet_a.cell(i, netprofit_col_a + 2).value,
+                  data_sheet_a.cell(i, netprofit_col_a + 3).value,
                   data_sheet_a.cell(i, grossmargin_col_a).value, data_sheet_a.cell(i, grossmargin_col_a + 1).value,
                   data_sheet_a.cell(i, goodwillrate_col_a).value, data_sheet_a.cell(i, goodwillrate_col_a + 1).value)
             data_sheet.cell(i_origin, industry_col).value = industry_name[0]
@@ -160,6 +161,7 @@ def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
             data_sheet.cell(i_origin, netprofit_col).value = data_sheet_a.cell(i, netprofit_col_a).value
             data_sheet.cell(i_origin, netprofit_col + 1).value = data_sheet_a.cell(i, netprofit_col_a + 1).value
             data_sheet.cell(i_origin, netprofit_col + 2).value = data_sheet_a.cell(i, netprofit_col_a + 2).value
+            data_sheet.cell(i_origin, netprofit_col + 3).value = data_sheet_a.cell(i, netprofit_col_a + 3).value
             data_sheet.cell(i_origin, grossmargin_col).value = data_sheet_a.cell(i, grossmargin_col_a).value
             data_sheet.cell(i_origin, grossmargin_col + 1).value = data_sheet_a.cell(i, grossmargin_col_a + 1).value
             data_sheet.cell(i_origin, goodwillrate_col).value = data_sheet_a.cell(i, goodwillrate_col_a).value
@@ -194,8 +196,8 @@ def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
             print(i_origin, data_sheet_b.cell(i, industry_col_b).value,
                   data_sheet_b.cell(i, industry_col_b + 1).value, data_sheet_b.cell(i, industry_col_b + 2).value,
                   data_sheet_b.cell(i, equity_col_b).value,
-                  data_sheet_b.cell(i, netprofit_col_b).value,
-                  data_sheet_b.cell(i, netprofit_col_b + 1).value, data_sheet_b.cell(i, netprofit_col_b + 2).value,
+                  data_sheet_b.cell(i, netprofit_col_b).value, data_sheet_b.cell(i, netprofit_col_b + 1).value,
+                  data_sheet_b.cell(i, netprofit_col_b + 2).value, data_sheet_b.cell(i, netprofit_col_b + 3).value,
                   data_sheet_b.cell(i, grossmargin_col_b).value, data_sheet_b.cell(i, grossmargin_col_b + 1).value,
                   data_sheet_b.cell(i, goodwillrate_col_b).value, data_sheet_b.cell(i, goodwillrate_col_b + 1).value,
                   data_sheet_b.cell(i, inc_col_b).value,
@@ -208,6 +210,7 @@ def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
             data_sheet.cell(i_origin, netprofit_col).value = data_sheet_b.cell(i, netprofit_col_b).value
             data_sheet.cell(i_origin, netprofit_col + 1).value = data_sheet_b.cell(i, netprofit_col_b + 1).value
             data_sheet.cell(i_origin, netprofit_col + 2).value = data_sheet_b.cell(i, netprofit_col_b + 2).value
+            data_sheet.cell(i_origin, netprofit_col + 3).value = data_sheet_b.cell(i, netprofit_col_b + 3).value
             data_sheet.cell(i_origin, grossmargin_col).value = data_sheet_b.cell(i, grossmargin_col_b).value
             data_sheet.cell(i_origin, grossmargin_col + 1).value = data_sheet_b.cell(i, grossmargin_col_b + 1).value
             data_sheet.cell(i_origin, goodwillrate_col).value = data_sheet_b.cell(i, goodwillrate_col_b).value
