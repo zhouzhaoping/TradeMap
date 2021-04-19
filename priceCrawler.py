@@ -98,7 +98,7 @@ def get_sina_price(stock_code):
         #print(stock_code, curprice, date_now)
     except:
         curprice = 100.0# todo 未上市的债券
-        date_now = datetime.datetime.strptime("2021-01-31", '%Y-%m-%d')
+        date_now = datetime.datetime.strptime("2021-04-01", '%Y-%m-%d')
 
     # 0股票名字；1今日开盘价；2昨日收盘价；3当前价格；4今日最高价；5今日最低价；6竞买价，即“买一”报价；7竞卖价，即“卖一”报价；
     # http://blog.sina.com.cn/s/blog_5dc29fcc0101dq5s.html
@@ -107,7 +107,6 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
-    #return 0.84041
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
@@ -165,5 +164,5 @@ if __name__ == "__main__":
     #print(get_sina_increase("123067"))
     #print(get_sina_increase("688981"))
     #print(get_sina_increase("832456"))
-    print(get_sina_price("300003"))
-    #print(get_hk_rate())
+    #print(get_fund_price("006586"))
+    print(get_hk_rate())
