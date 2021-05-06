@@ -131,7 +131,7 @@ def update_stock_basic_info(excelpath, a_shareinfo, h_shareinfo):
     industry_col_a = headers_a.index('所属申万行业') + 1
     netprofit_col_a = headers_a.index('预测净利润(元)') + 1
     grossmargin_col_a = headers_a.index('销售毛利率(%)') + 1
-    goodwillrate_col_a = headers_a.index('{(}商誉{/}净利润{)}') + 1
+    goodwillrate_col_a = headers_a.index('[1] / [2]') + 1 #headers_a.index('{(}商誉{/}净利润{)}') + 1
     roic_col_a = -1
     equity_col_a = -1
     foreign_col_a = -1
@@ -257,7 +257,14 @@ if __name__ == '__main__':
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
 
-    filepath = cfg.get('file', 'stock_path')
-    a_share_info_path = cfg.get('file', 'a_share_info_path')
-    h_share_info_path = cfg.get('file', 'h_share_info_path')
-    update_stock_basic_info(filepath, a_share_info_path, h_share_info_path)
+    # filepath = cfg.get('file', 'stock_path')
+    # a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
+    # h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
+    # update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
+    #
+    # a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
+    # h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
+    # update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
+    #
+    # a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
+    # update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
