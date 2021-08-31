@@ -38,6 +38,10 @@ def update_position_price(excelpath):
     pivot = pivot_sheet._pivots[0]  # 任何一个都可以共享同一个缓存
     pivot.cache.refreshOnLoad = True  # 刷新加载
 
+    pivot_sheet2 = wb.get_sheet_by_name("股票总计")
+    pivot2 = pivot_sheet2._pivots[0]  # 任何一个都可以共享同一个缓存
+    pivot2.cache.refreshOnLoad = True  # 刷新加载
+
     # 更新股价
     data_sheet = wb.get_sheet_by_name("实时持仓")
     headers = get_headers(data_sheet)
@@ -257,14 +261,17 @@ if __name__ == '__main__':
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
 
-    # filepath = cfg.get('file', 'stock_path')
-    # a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
-    # h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
-    # update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
-    #
-    # a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
-    # h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
-    # update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
-    #
-    # a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
-    # update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
+    filepath = cfg.get('file', 'stock_path')
+    a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
+    h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
+    update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
+
+    a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
+    h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
+    update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
+
+    a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
+    update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
+
+    a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
+    update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)

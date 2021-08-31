@@ -12,7 +12,7 @@ def get_his_data(stockcode, date, default=True):
     # 12-深证转债，11-上证转债
 
     # 未上市债券
-    if stockcode in {"113048", "110080", "127032"}:
+    if stockcode in {"127045", "127043", "118002", "113628"}:
         return 100.0
 
     try:
