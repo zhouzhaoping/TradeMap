@@ -45,12 +45,12 @@ def get_fund_price(fund_code):
 
 
 def get_sina_price(stock_code):
-    date_now = datetime.datetime.strptime("2021-09-01", '%Y-%m-%d')
-    # 未上市股票
-    if stock_code in {"605599"}:
-        return 10.0, date_now
-    elif stock_code in {"001213"}:
-        return 3.96, date_now
+    date_now = datetime.datetime.strptime("2021-10-01", '%Y-%m-%d')
+    # todo 未上市股票
+    # if stock_code in {"605599"}:
+    #     return 10.0, date_now
+    # elif stock_code in {"001213"}:
+    #     return 3.96, date_now
 
     url = "http://hq.sinajs.cn/list=$stock_code"
     # 00-深证A股，60-上证A股，300-创业板
@@ -113,7 +113,7 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
-    return 0.83168
+    return 0.8222
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
@@ -172,5 +172,4 @@ if __name__ == "__main__":
     #print(get_sina_increase("688981"))
     #print(get_sina_increase("832456"))
     #print(get_fund_price("006586"))
-    print(get_sina_price("605599"))
-    print(get_sina_price("001213"))
+    print(get_hk_rate())

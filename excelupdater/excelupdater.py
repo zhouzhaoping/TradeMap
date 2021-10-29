@@ -261,17 +261,17 @@ if __name__ == '__main__':
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
 
-    filepath = cfg.get('file', 'stock_path')
-    a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
-    h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
-    update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
-
-    a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
-    h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
-    update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
-
-    a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
-    update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
-
-    a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
-    update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)
+    # filepath = cfg.get('file', 'stock_path')
+    # a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
+    # h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
+    # update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
+    #
+    # a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
+    # h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
+    # update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
+    #
+    # a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
+    # update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
+    #
+    # a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
+    # update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)
