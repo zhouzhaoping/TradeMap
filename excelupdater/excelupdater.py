@@ -26,6 +26,32 @@ def latest_price(code, exchange):
     else:
         return -1
 
+
+def update_peterlynch_price(excelpath):
+    wb = openpyxl.load_workbook(excelpath, data_only=False)
+
+    # 更新汇率
+    config_sheet = wb.get_sheet_by_name("参数")
+    config_sheet.cell(row=1, column=2).value = priceCrawler.get_hk_rate()
+
+    # 保护数据透视表格式
+    pivot_sheet = wb.get_sheet_by_name("总计")
+    pivot = pivot_sheet._pivots[0]  # 任何一个都可以共享同一个缓存
+    pivot.cache.refreshOnLoad = True  # 刷新加载
+
+    # 更新股价
+    data_sheet = wb.get_sheet_by_name("整体估值")
+    headers = get_headers(data_sheet)
+    code_col = headers.index('代码') + 1
+    price_col = headers.index('股价') + 1
+
+    row_num = data_sheet.max_row
+    for i in range(2, row_num + 1):
+        nav = latest_price(data_sheet.cell(i, code_col).value, "上海")
+        data_sheet.cell(i, price_col).value = nav
+    wb.save(excelpath)
+
+
 def update_position_price(excelpath):
     wb = openpyxl.load_workbook(excelpath, data_only=False)
 
@@ -54,6 +80,7 @@ def update_position_price(excelpath):
         nav = latest_price(data_sheet.cell(i, code_col).value, data_sheet.cell(i, exchange_col).value)
         data_sheet.cell(i, price_col).value = nav
     wb.save(excelpath)
+
 
 def update_stock_price(excelpath):
     wb = openpyxl.load_workbook(excelpath, data_only=False)
@@ -255,23 +282,26 @@ def update_hkrate(excelpath):
 if __name__ == '__main__':
     cfg = ConfigParser()
     cfg.read('config.ini', encoding='UTF-8')
+    filepath = cfg.get('file', 'peterlynch_path')
+    update_peterlynch_price(filepath)
+
     filepath = cfg.get('file', 'position_path')
     update_position_price(filepath)
 
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
 
-    # filepath = cfg.get('file', 'stock_path')
-    # a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
-    # h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
-    # update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
-    #
-    # a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
-    # h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
-    # update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
-    #
-    # a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
-    # update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
-    #
-    # a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
-    # update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)
+    filepath = cfg.get('file', 'stock_path')
+    a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
+    h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
+    update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
+
+    a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
+    h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
+    update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
+
+    a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
+    update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
+
+    a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
+    update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)
