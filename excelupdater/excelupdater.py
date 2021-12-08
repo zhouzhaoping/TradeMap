@@ -21,6 +21,8 @@ def latest_price(code, exchange):
     elif exchange in {"场外基金"}:
         nav, date_now = priceCrawler.get_fund_price(code)
         return nav
+    elif exchange in {"宽基"}:
+        return priceCrawler.get_stock_price("SH." + code, "")
     elif exchange in {"现金"}:
         return 1
     else:
@@ -44,11 +46,19 @@ def update_peterlynch_price(excelpath):
     headers = get_headers(data_sheet)
     code_col = headers.index('代码') + 1
     price_col = headers.index('股价') + 1
+    category_col = headers.index('行业分类') + 1
 
     row_num = data_sheet.max_row
     for i in range(2, row_num + 1):
-        nav = latest_price(data_sheet.cell(i, code_col).value, "上海")
-        data_sheet.cell(i, price_col).value = nav
+        #print(data_sheet.cell(i, code_col).value)
+        if data_sheet.cell(i, code_col).value is None:
+            pass
+        elif data_sheet.cell(i, category_col).value == "宽基":
+            nav = latest_price(data_sheet.cell(i, code_col).value, "宽基")
+            data_sheet.cell(i, price_col).value = nav
+        else:
+            nav = latest_price(data_sheet.cell(i, code_col).value, "上海")
+            data_sheet.cell(i, price_col).value = nav
     wb.save(excelpath)
 
 
@@ -291,17 +301,17 @@ if __name__ == '__main__':
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
 
-    filepath = cfg.get('file', 'stock_path')
-    a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
-    h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
-    update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
-
-    a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
-    h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
-    update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
-
-    a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
-    update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
-
-    a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
-    update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)
+    # filepath = cfg.get('file', 'stock_path')
+    # a_share_info_path1 = cfg.get('file', 'a_share_info_path1')
+    # h_share_info_path1 = cfg.get('file', 'h_share_info_path1')
+    # update_stock_basic_info(filepath, a_share_info_path1, h_share_info_path1)
+    #
+    # a_share_info_path2 = cfg.get('file', 'a_share_info_path2')
+    # h_share_info_path2 = cfg.get('file', 'h_share_info_path2')
+    # update_stock_basic_info(filepath, a_share_info_path2, h_share_info_path2)
+    #
+    # a_share_info_path3 = cfg.get('file', 'a_share_info_path3')
+    # update_stock_basic_info(filepath, a_share_info_path3, h_share_info_path2)
+    #
+    # a_share_info_path4 = cfg.get('file', 'a_share_info_path4')
+    # update_stock_basic_info(filepath, a_share_info_path4, h_share_info_path2)

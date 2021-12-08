@@ -31,7 +31,7 @@ def get_stock_price(stock_code, date):
     print(result)
     #### 登出系统 ####
     bs.logout()
-    return float(result['close'][0])
+    return float(result['close'].iat[-1])
 
 
 def get_fund_price(fund_code):
@@ -113,7 +113,7 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
-    return 0.82003
+    return 0.81777
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
@@ -162,14 +162,14 @@ def get_sina_increase(stock_code):
     return [oneday_inc, oneweek_inc, onemonth_inc, halfyear_inc, oneyear_inc]
 
 if __name__ == "__main__":
-    #get_stock_price("SZ.300122", "2019-3-14")
-    #print(get_fund_price("501018"))
+    print(get_stock_price("SH.000016", ""))
+    #print(get_fund_price("000016"))
     #print(get_sina_increase("000001"))
     #print(get_sina_increase("002027"))  #http://hq.sinajs.cn/list=sz002027
     #print(get_sina_increase("160311"))  #http://hq.sinajs.cn/list=of160311
     #print(get_sina_increase("831010"))  #http://hq.sinajs.cn/list=sb831010
-    print(get_sina_price("127048"))
+    #print(get_sina_price("127048"))
     #print(get_sina_increase("688981"))
     #print(get_sina_increase("832456"))
     #print(get_fund_price("006586"))
-    print(get_hk_rate())
+    #print(get_hk_rate())
