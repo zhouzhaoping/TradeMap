@@ -59,6 +59,18 @@ def update_peterlynch_price(excelpath):
         else:
             nav = latest_price(data_sheet.cell(i, code_col).value, "上海")
             data_sheet.cell(i, price_col).value = nav
+
+    # 更新报表好看一列
+    data_sheet2 = wb.get_sheet_by_name("报表好看")
+    headers2 = get_headers(data_sheet2)
+    code_col = headers2.index('代码') + 1
+    price_col = headers2.index('现价') + 1
+
+    row_num = data_sheet2.max_row
+    for i in range(2, row_num + 1):
+        nav = latest_price(str(data_sheet2.cell(i, code_col).value), "上海")
+        data_sheet2.cell(i, price_col).value = nav
+
     wb.save(excelpath)
 
 
