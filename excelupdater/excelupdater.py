@@ -1,6 +1,7 @@
 import openpyxl
 from configparser import ConfigParser
 import priceCrawler
+import crawler.akshare_api as ak
 from mathhelp.irr import xirr
 import xlrd
 
@@ -15,9 +16,12 @@ def get_headers(sheet):
 
 def latest_price(code, exchange):
     global date_now
-    if exchange in {"上海", "深圳", "香港", "新三板", "可转债", "场内基金", "新股"}:
-        nav, date_now = priceCrawler.get_sina_price(code)
-        return nav
+    if exchange in {"上海", "深圳", "香港", "新三板", "新股"}:
+        return ak.get_stock_price(code)
+    elif exchange in {"可转债"}:
+        return ak.get_bond_price(code)
+    elif exchange in {"场内基金"}:
+        return ak.get_etf_fund_price(code)
     elif exchange in {"场外基金"}:
         nav, date_now = priceCrawler.get_fund_price(code)
         return nav
@@ -142,7 +146,7 @@ def update_stock_price(excelpath):
 
     row_num = data_sheet2.max_row
     for i in range(2, row_num + 1):
-        nav = latest_price(str(data_sheet2.cell(i, code_col).value), "上海")
+        nav = latest_price(str(data_sheet2.cell(i, code_col).value), "可转债")
         data_sheet2.cell(i, price_col).value = nav
 
         mytas = []
@@ -304,11 +308,11 @@ def update_hkrate(excelpath):
 if __name__ == '__main__':
     cfg = ConfigParser()
     cfg.read('config.ini', encoding='UTF-8')
-    filepath = cfg.get('file', 'peterlynch_path')
-    update_peterlynch_price(filepath)
-
-    filepath = cfg.get('file', 'position_path')
-    update_position_price(filepath)
+    # filepath = cfg.get('file', 'peterlynch_path')
+    # update_peterlynch_price(filepath)
+    #
+    # filepath = cfg.get('file', 'position_path')
+    # update_position_price(filepath)
 
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)
