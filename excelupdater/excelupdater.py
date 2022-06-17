@@ -16,6 +16,10 @@ def get_headers(sheet):
 
 def latest_price(code, exchange):
     global date_now
+    # 未上市
+    if code in {"688297"}:
+        return 32.35
+
     if exchange in {"上海", "深圳", "香港", "新三板", "新股"}:
         return ak.get_stock_price(code)
     elif exchange in {"可转债"}:
@@ -54,7 +58,7 @@ def update_peterlynch_price(excelpath):
 
     row_num = data_sheet.max_row
     for i in range(2, row_num + 1):
-        #print(data_sheet.cell(i, code_col).value)
+        print(data_sheet.cell(i, code_col).value)
         if data_sheet.cell(i, code_col).value is None:
             pass
         elif data_sheet.cell(i, category_col).value == "宽基":
@@ -306,13 +310,15 @@ def update_hkrate(excelpath):
     wb.save(excelpath)
 
 if __name__ == '__main__':
+    #ak.get_all()
+
     cfg = ConfigParser()
     cfg.read('config.ini', encoding='UTF-8')
-    # filepath = cfg.get('file', 'peterlynch_path')
-    # update_peterlynch_price(filepath)
-    #
-    # filepath = cfg.get('file', 'position_path')
-    # update_position_price(filepath)
+    filepath = cfg.get('file', 'peterlynch_path')
+    update_peterlynch_price(filepath)
+
+    filepath = cfg.get('file', 'position_path')
+    update_position_price(filepath)
 
     filepath = cfg.get('file', 'stock_path')
     update_stock_price(filepath)

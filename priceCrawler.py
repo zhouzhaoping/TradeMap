@@ -113,7 +113,7 @@ def get_sina_price(stock_code):
 
 
 def get_hk_rate():
-    return 0.8149
+    return 0.85105
     time_now = time.strftime("%Y%m%d", time.localtime())
     #print(time_now)
     response = requests.get(
